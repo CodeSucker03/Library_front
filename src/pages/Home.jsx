@@ -1,0 +1,120 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Spinner from "../components/Spinner";
+import SideBar from "../components/home/sideBar";
+import Footer from "./Footer";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit,AiOutlineUser } from "react-icons/ai";
+import { BsInfoCircle } from "react-icons/bs";
+import { MdOutlineAddBox, MdOutlineViewSidebar } from "react-icons/md";
+import BooksCard from "../components/home/BooksCard";
+import logo from "../assets/logo.png";
+// import BooksTable from '../components/home/BooksTable'
+import SearchBar from "../components/SearchBar";
+
+const Home = () => {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("");
+
+  const handleLang = (event) => {
+    setSelectedLanguage(event.target.value);
+  };
+
+  const handleGenre = (event) => {
+    setSelectedGenre(event.target.value);
+  };
+  // const [showType,setShowType] =useState('table')
+  const [query, setQuery] = useState(""); // State to hold the search query
+
+  const fetchBooks = (searchQuery = "") => {
+    // default search value is empty
+    setLoading(true);
+    const url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=1`;
+    // const url = `http://localhost:5555/books/?query=${searchQuery}`
+    axios
+      .get(url)
+      .then((res) => {
+        setBooks(res.data.books);
+        // setBooks(res.data.data);
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchBooks(query); // Fetch books based on the query
+  }, [query]); // useEffect will re-run whenever the `query` state changes
+
+  const handleSearch = (searchQuery) => {
+    setQuery(searchQuery); // Update the query state, which triggers useEffect
+  };
+
+  return (
+    <div className="flex flex-col">
+      <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify-between">
+        <img src={logo} alt="Logo" className="w-14 h-20 mr-4" />
+        <h1 className="text-3xl font-bold text-white">HUST Library</h1>
+        <SearchBar onSearch={handleSearch}></SearchBar>
+        <Link to="/books/create">
+          <MdOutlineAddBox className="text-sky-700 text-4xl"></MdOutlineAddBox>
+        </Link>
+
+        <div name="FILTERS Lang">
+          <select
+            id="language"
+            className="rounded-full p-2"
+            value={selectedLanguage} // Controlled component using value
+            onChange={handleLang}
+          >
+            <option value="" disabled>
+              Language Filter
+            </option>
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Japanese">Japanese</option>
+          </select>
+
+          {/* <p>Selected Language: {selectedLanguage}</p> */}
+        </div>
+
+        <div name="FILTERS Genres">
+          <select
+            id="language"
+            className="rounded-full p-2"
+            value={selectedLanguage} // Controlled component using value
+            onChange={handleGenre}
+          >
+            <option value="" disabled>
+              Genres Filter
+            </option>
+            <option value="Sci-fi">Sci-fi</option>
+            <option value="Drama">Drama</option>
+            <option value="Chinese">...</option>
+            <option value="Japanese">...</option>
+          </select>
+          {/* <p>Selected Genre: {selectedGenre}</p> */}
+        </div>
+        <AiOutlineUser
+          className="text-black text-4xl"
+          onClick={() => setShowSideBar(true)}
+        ></AiOutlineUser>
+        {showSideBar && <SideBar onClose={() => setShowSideBar(false)} />}
+      </div>
+      {loading ? <Spinner /> : <BooksCard books={books}></BooksCard>}
+      <div className="flex justify-center">
+        {/* Footer content goes here */}
+        <Footer></Footer>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
