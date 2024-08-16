@@ -26,7 +26,7 @@ const CreateBooks = () => {
   const [uploadProgress, setUploadProgress] = useState(0); // State to track upload progress
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
-  
+
   const { enqueueSnackbar } = useSnackbar();
 
   // GENRE LIST ADD HERE
@@ -136,7 +136,7 @@ const CreateBooks = () => {
           description: description,
           shelf_locations: shelfLocation,
         };
-        console.log(bookData)
+        console.log(bookData);
         // const serverRes = await axios.post(
         //   `http://localhost:5555/books`,
         //   bookData
@@ -263,17 +263,18 @@ const CreateBooks = () => {
             type="number"
             value={numCopies}
             onChange={(e) => {
-              setNumCopies(e.target.value);
-              generateShelfLocations(e.target.value);
+              const value = Math.max(0, e.target.value); // Ensure the value is not negative
+              setNumCopies(value);
+              generateShelfLocations(value);
             }}
+            min="0" // Prevent negative numbers
             className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
           />
         </div>
-
+        <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
         {/* Generate Shelf Locations (Based on Number of Copies) */}
         {shelfLocation.length > 0 && (
-          <div className="my-4 flex flex-col">
-            <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-2">
             {shelfLocation.map((location, index) => (
               <ShelfLocation
                 key={index}

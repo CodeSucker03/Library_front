@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { MdOutlineAddBox } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
@@ -82,6 +83,18 @@ const EditBooks = () => {
     }
   };
 
+  const addShelfLocation = () => {
+    setShelfLocation([
+      ...shelfLocation,
+      { shelf:'', status: "Available" },
+    ]);
+  };
+
+  const deleteShelfLocation = (name) => {
+    const updatedLocations = shelfLocation.filter(item => item.shelf !== name);
+    setShelfLocation(updatedLocations);
+  };
+
   const generateShelfLocations = (numCopies) => {
     // Assuming shelf numbers are sequential starting from 1
     setShelfLocation(
@@ -91,15 +104,14 @@ const EditBooks = () => {
       }))
     );
   };
-// Function to handle updating the shelfLocation array
-const handleShelfData = (updatedShelf, index) => {
-  setShelfLocation((prevState) => {
-    const newState = [...prevState];
-    newState[index] = updatedShelf; // Update the specific object
-    return newState;
-  });
-};
-  
+  // Function to handle updating the shelfLocation array
+  const handleShelfData = (updatedShelf, index) => {
+    setShelfLocation((prevState) => {
+      const newState = [...prevState];
+      newState[index] = updatedShelf; // Update the specific object
+      return newState;
+    });
+  };
 
   // Resize image function
   const resizeFile = (file) =>
@@ -122,48 +134,64 @@ const handleShelfData = (updatedShelf, index) => {
     event.preventDefault();
     setButton(true); // set button disable
     let uploadedImageUrl = imageUrl;
-    try {
-      if (image) {
-        const resizedImage = await resizeFile(image);
-        const cloudName = "dehwipfaq";
-        const presetKey = "ml_default";
-        const formData = new FormData();
-        formData.append("file", resizedImage);
-        formData.append("upload_preset", presetKey);
-        // Upload image to cloud
-        const response = await axios.post(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          formData,
-          {
-            onUploadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setUploadProgress(percentCompleted);
-            },
-          }
-        );
-        uploadedImageUrl = response.data.secure_url;
-      }
-      const bookData = {
-        title,
-        author,
-        publishYear,
 
-        imageUrl: uploadedImageUrl,
-      };
-      const serverRes = await axios.put(
-        `http://localhost:5555/books/${id}`,
-        bookData
-      );
-      console.log(serverRes);
-      navigate("/");
-      enqueueSnackbar("Book Edited successfully!", { variant: "success" });
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar("Edit failed", { variant: "error" });
-      setButton(false);
-    }
+    const bookData = {
+      ISBN: "string",
+      authors: author,
+      genres: selectedGenres,
+      title: title,
+      publisher: publisher,
+      edition: edition,
+      publication_date: publishYear,
+      language: language,
+      number_of_copies_available: numCopies,
+      book_cover_image: uploadedImageUrl,
+      description: description,
+      shelf_locations: shelfLocation,
+    };
+    console.log(bookData)
+    // try {
+    //   if (image) {
+    //     const resizedImage = await resizeFile(image);
+    //     const cloudName = "dehwipfaq";
+    //     const presetKey = "ml_default";
+    //     const formData = new FormData();
+    //     formData.append("file", resizedImage);
+    //     formData.append("upload_preset", presetKey);
+    //     // Upload image to cloud
+    //     const response = await axios.post(
+    //       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    //       formData,
+    //       {
+    //         onUploadProgress: (progressEvent) => {
+    //           const percentCompleted = Math.round(
+    //             (progressEvent.loaded * 100) / progressEvent.total
+    //           );
+    //           setUploadProgress(percentCompleted);
+    //         },
+    //       }
+    //     );
+    //     uploadedImageUrl = response.data.secure_url;
+    //   }
+    //   const bookData = {
+    //     title,
+    //     author,
+    //     publishYear,
+
+    //     imageUrl: uploadedImageUrl,
+    //   };
+    //   const serverRes = await axios.put(
+    //     `http://localhost:5555/books/${id}`,
+    //     bookData
+    //   );
+    //   console.log(serverRes);
+    //   navigate("/");
+    //   enqueueSnackbar("Book Edited successfully!", { variant: "success" });
+    // } catch (error) {
+    //   console.log(error);
+    //   enqueueSnackbar("Edit failed", { variant: "error" });
+    //   setButton(false);
+    // }
   };
   return (
     <div className="p-4">
@@ -171,17 +199,17 @@ const handleShelfData = (updatedShelf, index) => {
       <h1 className="text-3xl my-4">Edit Book</h1>
       {loading ? <Spinner /> : ""}
       <div className="flex flex-row  items-start">
-        <div className="my-4">
-          {/* Book Cover */}
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt={`${title} cover`}
-              className="object-cover w-64 h-96  rounded-lg shadow-lg"
-            />
-          )}
-        </div>
-        <div className="flex flex-col border-2 border-black rounded-xl w-[900px] p-4 m-4">
+        <div className="flex flex-col">
+          <div className="my-4">
+            {/* Book Cover */}
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                alt={`${title} cover`}
+                className="object-cover w-64 h-96  rounded-lg shadow-lg"
+              />
+            )}
+          </div>
           {uploadProgress > 0 && (
             <div className="my-4">
               <div className="h-2 bg-gray-300 rounded">
@@ -190,22 +218,21 @@ const handleShelfData = (updatedShelf, index) => {
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
-              <p className="text-gray-500 mt-2">{uploadProgress}% uploaded</p>
             </div>
           )}
 
-          <div className="my-4">
-            <label className="text-xl mr-4 text-gray-500">
-              Change Book Cover
-            </label>
+          <div className="my-2 flex flex-col">
+            <label className="text-xl text-gray-500">Change Book Cover</label>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
-              className="border-2 border-gray-500 px-4 py-2 w-full rounded-full"
+              className="border-2 border-gray-500 px-4 py-2 rounded-full"
             ></input>
           </div>
+        </div>
 
+        <div className="flex flex-col border-2 border-black rounded-xl w-[900px] p-4 m-4">
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">ISBN</label>
             <input
@@ -318,26 +345,34 @@ const handleShelfData = (updatedShelf, index) => {
               type="number"
               value={numCopies}
               onChange={(e) => {
-                setNumCopies(e.target.value);
-                generateShelfLocations(e.target.value);
+                const value = Math.max(0, e.target.value); // Ensure the value is not negative
+                setNumCopies(value);
+                generateShelfLocations(value);
               }}
+              min="0" // Prevent negative numbers
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
             />
           </div>
 
           {/* Generate Shelf Locations (Based on Number of Copies) */}
+          <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
+          {/* Button to Add New Shelf Location */}
+          <MdOutlineAddBox
+            onClick={addShelfLocation}
+            className="text-4xl text-red-400"
+          >
+            Add Shelf Location
+          </MdOutlineAddBox>
           {shelfLocation.length > 0 && (
-            <div className="my-4 flex flex-col">
-              <label className="text-xl mr-4 text-gray-500">
-                Shelf Location
-              </label>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-2">
               {shelfLocation.map((location, index) => (
                 <ShelfLocation
-                  key={index}
+                  key={location.shelf}
                   shelf={location}
-                  onShelfDataChange={(updatedShelf) =>
-                    handleShelfData(updatedShelf, index)
+                  onShelfDataChange={(updatedShelf) =>{
+                    handleShelfData(updatedShelf, index)}
                   }
+                  onDelete={() => deleteShelfLocation(location.shelf)} // Pass delete handler
                 />
               ))}
             </div>

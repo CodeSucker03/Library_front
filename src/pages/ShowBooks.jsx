@@ -6,15 +6,21 @@ import Spinner from '../components/Spinner'
 const ShowBooks = () => {
   const [book, setBook] = useState({})
   const [loading, setLoading] = useState(false)
+  const [numCopies, setNumCopies] = useState("");
+  const [description, setDescription] = useState("");
+  const [shelfLocation, setShelfLocation] = useState([]);
+
   const {id} = useParams()
   useEffect(() =>{
       setLoading(true)
       axios
       // .get(`http://localhost:5555/books/${id}`)
-      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1//${id}`)
+      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/${id}`)
       .then((response) =>{
           setBook(response.data)
+          setShelfLocation(response.data.shelf_locations)
           setLoading(false)
+         
       })
       .catch((error) =>{
           console.log(error)
@@ -22,65 +28,76 @@ const ShowBooks = () => {
       })
   }, [])
   return (
-    <div className='px-40 py-4'>
-      <BackButton />
+  <>
+  <div className='fixed top-7 left-6'><BackButton /></div>
+    <div className='px-32 py-4'>
       <h1 className='text-3xl my-4'>Book Details</h1>
       {loading ? <Spinner /> : (
-        <div className='flex-col border-2 border-gray-300 rounded-lg px-4 py-2
-         relative hover:shadow-xl items-center'>
-          <div className='my-4 px-24 py-2 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>ID</span>
-            <span>{book.ISBN}</span>
-          </div>
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Title</span>
-            <span>{book.title}</span>
-          </div>
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Author</span>
-            <span>{book.authors}</span>
-          </div>
-
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Genres</span>
-            <span>{book.genres}</span>
-          </div>          
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Publisher</span>
-            <span>{book.publisher}</span>
-          </div>
-
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Edition</span>
-            <span>{book.edition}</span>
-          </div>
-          
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Publish Year</span>
-            <span>{book.publication_date}</span>
-          </div>
-
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Language</span>
-            <span>{book.language}</span>
-          </div>
-          
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Number of Copies</span>
-            <span>{book.number_of_copies_available}</span>
-          </div>
-           
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Create Time</span>
-            <span>{new Date(book.createdAt).toString()}</span>
-          </div>
-          <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
-            <span className='text-xl mr-4 text-gray-500'>Last Update Time</span>
-            <span>{new Date(book.updatedAt).toString()}</span>
-          </div>
+      <div className='grid grid-cols-2 gap-4'>
+      <div className='flex-col border-2 border-gray-300 rounded-lg px-4 py-2 hover:shadow-xl'>
+        <div className='my-4 p-3 border-2 border-gray-200 rounded-md'>
+          <span className='text-xl mr-4 text-gray-500'>Shelf Locations</span>
+          {shelfLocation.map((location, index) => (
+            <div   className={`m-2 text-xl ${
+              location.status === 'Available' ? 'text-green-500' : 'text-red-500'
+            }`} key={index}>
+              Location: {location.shelf} {location.status}
+            </div>
+          ))}
         </div>
-      )}
+      </div>
+    
+      {/* Right Side - Other Book Details */}
+      <div className='flex-col border-2 border-gray-300 rounded-lg px-4 py-2 hover:shadow-xl'>
+        <div className='my-4 px-24 py-2 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>ID</span>
+          <span>{book.ISBN}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Title</span>
+          <span>{book.title}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Author</span>
+          <span>{book.authors}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Genres</span>
+          <span>{book.genres}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Publisher</span>
+          <span>{book.publisher}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Edition</span>
+          <span>{book.edition}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Publish Year</span>
+          <span>{book.publication_date}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Language</span>
+          <span>{book.language}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Number of Copies</span>
+          <span>{book.number_of_copies_available}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Create Time</span>
+          <span>{new Date(book.createdAt).toString()}</span>
+        </div>
+        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+          <span className='text-xl mr-4 text-gray-500'>Last Update Time</span>
+          <span>{new Date(book.updatedAt).toString()}</span>
+        </div>
+      </div>
     </div>
+    )}
+    </div>
+  </>
   )
 }
 
