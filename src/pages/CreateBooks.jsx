@@ -8,6 +8,9 @@ import { useSnackbar } from "notistack";
 import Resizer from "react-image-file-resizer";
 
 const CreateBooks = () => {
+  {
+    /* States input */
+  }
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [publishYear, setPublishYear] = useState("");
@@ -19,19 +22,47 @@ const CreateBooks = () => {
   const [numCopies, setNumCopies] = useState("");
   const [description, setDescription] = useState("");
   const [shelfLocation, setShelfLocation] = useState([]);
-  
-  const generateShelfLocations = (numCopies) => {
-    // Assuming shelf numbers are sequential starting from 1
-   setShelfLocation(Array.from({ length: numCopies }, (_, index) => ({
-      shelf: ``,
-      status:``, // cycling through statuses
-    })));
-  };
-
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0); // State to track upload progress
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
+  
   const { enqueueSnackbar } = useSnackbar();
+
+  // GENRE LIST ADD HERE
+  const genresList = [
+    "Science Fiction",
+    "Fantasy",
+    "Mystery",
+    "Romance",
+    "Thriller",
+    "Historical Fiction",
+    "Horror",
+    "Non-Fiction",
+    "Biography",
+    "Self-Help",
+    "Young Adult",
+    "Children's",
+  ];
+
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      setSelectedGenres([...selectedGenres, value]);
+    } else {
+      setSelectedGenres(selectedGenres.filter((genre) => genre !== value));
+    }
+  };
+
+  const generateShelfLocations = (numCopies) => {
+    // Assuming shelf numbers are sequential starting from 1
+    setShelfLocation(
+      Array.from({ length: numCopies }, (_, index) => ({
+        shelf: ``,
+        status: ``, // cycling through statuses
+      }))
+    );
+  };
 
   // Resize image function
   const resizeFile = (file) =>
@@ -50,64 +81,79 @@ const CreateBooks = () => {
       );
     });
 
+  // Function to handle updating the shelfLocation array
+  const handleShelfData = (updatedShelf, index) => {
+    setShelfLocation((prevState) => {
+      const newState = [...prevState];
+      newState[index] = updatedShelf; // Update the specific object
+      return newState;
+    });
+  };
+
   const handleSaveBook = async (event) => {
     event.preventDefault();
     setButton(true); // set button disable
-    console.log(shelfLocation)
-    // if (image) {
-    //   try {
-    //     const resizedImage = await resizeFile(image);
-    //     const cloudName = "dehwipfaq";
-    //     const presetKey = "ml_default";
-    //     const formData = new FormData();
-    //     formData.append("file", resizedImage);
-    //     formData.append("upload_preset", presetKey);
-    //     // Upload image to cloud
-    //     const response = await axios.post(
-    //       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    //       formData,
-    //       {
-    //         onUploadProgress: (progressEvent) => {
-    //           const percentCompleted = Math.round(
-    //             (progressEvent.loaded * 100) / progressEvent.total
-    //           );
-    //           setUploadProgress(percentCompleted);
-    //         },
-    //       }
-    //     );
-    //     const uploadedImageUrl = response.data.secure_url;
-    //     const bookData = {
-    //       title,
-    //       author,
-    //       publishYear,
-    //       imageUrl: uploadedImageUrl,
-    //     };
-    //     const serverRes = await axios.post(
-    //       `http://localhost:5555/books`,
-    //       bookData
-    //     );
-    //     console.log(serverRes);
-    //     navigate("/");
-    //     enqueueSnackbar("Book created successfully!", { variant: "success" });
-    //   } catch (error) {
-    //     console.log(error);
-    //     enqueueSnackbar("Image upload failed", { variant: "error" });
-    //     setButton(false);
-    //   }
-    // } else {
-    //   enqueueSnackbar("Please select an image", { variant: "warning" });
-    //   setButton(false); // set button disable
-    // }
-  };
 
-  // Function to handle updating the shelfLocation array
-  const handleShelfData = (updatedShelf, index) => {
-    setShelfLocation(prevState => {
-        const newState = [...prevState];
-        newState[index] = updatedShelf; // Update the specific object
-        return newState;
-    });
-};
+    if (image) {
+      try {
+        const resizedImage = await resizeFile(image);
+        const cloudName = "dehwipfaq";
+        const presetKey = "ml_default";
+        const formData = new FormData();
+        formData.append("file", resizedImage);
+        formData.append("upload_preset", presetKey);
+        // Upload image to cloud
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formData,
+          {
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadProgress(percentCompleted);
+            },
+          }
+        );
+        const uploadedImageUrl = response.data.secure_url;
+        //     const bookData = {
+        //       title,
+        //       author,
+        //       publishYear,
+        //       imageUrl: uploadedImageUrl,
+        //     };
+        const bookData = {
+          ISBN: "string",
+          authors: author.split(","),
+          genres: selectedGenres,
+          title: title,
+          publisher: publisher,
+          edition: edition,
+          publication_date: publishYear,
+          language: language,
+          number_of_copies_available: numCopies,
+          book_cover_image: uploadedImageUrl,
+          description: description,
+          shelf_locations: shelfLocation,
+        };
+        console.log(bookData)
+        // const serverRes = await axios.post(
+        //   `http://localhost:5555/books`,
+        //   bookData
+        // );
+        // console.log(serverRes);
+        // navigate("/");
+        // enqueueSnackbar("Book created successfully!", { variant: "success" });
+      } catch (error) {
+        console.log(error);
+        enqueueSnackbar("Image upload failed", { variant: "error" });
+        setButton(false);
+      }
+    } else {
+      enqueueSnackbar("Please select an image", { variant: "warning" });
+      setButton(false); // set button disable
+    }
+  };
   return (
     <div className="p-4">
       <BackButton></BackButton>
@@ -118,21 +164,44 @@ const CreateBooks = () => {
       hover:shadow-2xl p-4 mx-auto"
       >
         <div className="my-4">
+          <label className="text-xl mr-4 text-gray-500">Authors</label>
+          <p className="text-gray-400 font-extralight p-1">
+            If multiple authors, seperate by comma (ex: Name1, Name2)
+          </p>
+          <input
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
+             focus:ring-red-500 rounded-full"
+          ></input>
+        </div>
+
+        <div className="my-4">
+          <label className="text-xl mr-4 text-gray-500">Genres</label>
+          <div className="flex flex-wrap">
+            {genresList.map((genre) => (
+              <div key={genre} className="mr-4">
+                <label className="text-gray-700">
+                  <input
+                    type="checkbox"
+                    value={genre}
+                    onChange={handleCheckboxChange}
+                    className="mr-2"
+                  />
+                  {genre}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="my-4">
           <label className="text-xl mr-4 text-gray-500">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
-             focus:ring-red-500 rounded-full"
-          ></input>
-        </div>
-        <div className="my-4">
-          <label className="text-xl mr-4 text-gray-500">Author</label>
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
             className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
              focus:ring-red-500 rounded-full"
           ></input>
@@ -160,6 +229,17 @@ const CreateBooks = () => {
           />
         </div>
 
+        <div className="my-4">
+          <label className="text-xl mr-4 text-gray-500">Publish Year</label>
+          <input
+            type="date"
+            value={publishYear}
+            onChange={(e) => setPublishYear(e.target.value)}
+            className="border-2 border-gray-500 px-4 py-2 w-full rounded-full shadow-sm 
+            focus:outline-none focus:ring focus:ring-red-500 "
+          ></input>
+        </div>
+
         {/* Language (Dropdown) */}
         <div className="my-4">
           <label className="text-xl mr-4 text-gray-500">Language</label>
@@ -182,8 +262,9 @@ const CreateBooks = () => {
           <input
             type="number"
             value={numCopies}
-            onChange={(e) => {setNumCopies(e.target.value)
-              generateShelfLocations(e.target.value)
+            onChange={(e) => {
+              setNumCopies(e.target.value);
+              generateShelfLocations(e.target.value);
             }}
             className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
           />
@@ -193,13 +274,13 @@ const CreateBooks = () => {
         {shelfLocation.length > 0 && (
           <div className="my-4 flex flex-col">
             <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
-            {
-            shelfLocation.map((location,index  ) => (
+            {shelfLocation.map((location, index) => (
               <ShelfLocation
                 key={index}
                 shelf={location}
-                onShelfDataChange={
-                (updatedShelf) => handleShelfData(updatedShelf, index)}
+                onShelfDataChange={(updatedShelf) =>
+                  handleShelfData(updatedShelf, index)
+                }
               />
             ))}
           </div>
@@ -215,41 +296,6 @@ const CreateBooks = () => {
           />
         </div>
 
-        {/* Availability (Radio Buttons)
-      <div className="my-4 flex items-center">
-        <label className="text-xl mr-4 text-gray-500">Status</label>
-        <div className="mr-4">
-          <input
-            type="radio"
-            value="available"
-            checked={status === 'available'}
-            onChange={(e) => setStatus(e.target.value)}
-            className="mr-2"
-          />
-          <label className="text-gray-500">Available</label>
-        </div>
-        <div>
-          <input
-            type="radio"
-            value="reserved"
-            checked={status === 'reserved'}
-            onChange={(e) => setStatus(e.target.value)}
-            className="mr-2"
-          />
-          <label className="text-gray-500">Reserved</label>
-        </div>
-      </div> */}
-
-        <div className="my-4">
-          <label className="text-xl mr-4 text-gray-500">Publish Year</label>
-          <input
-            type="date"
-            value={publishYear}
-            onChange={(e) => setPublishYear(e.target.value)}
-            className="border-2 border-gray-500 px-4 py-2 w-full rounded-full shadow-sm 
-            focus:outline-none focus:ring focus:ring-red-500 "
-          ></input>
-        </div>
         <div className="my-4">
           <label className="text-xl mr-4 text-gray-500">Book Cover</label>
           <input
