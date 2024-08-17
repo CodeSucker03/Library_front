@@ -11,7 +11,7 @@ import ShelfLocation from "../components/ShelfLocation";
 const EditBooks = () => {
   const [ISBN, setISBN] = useState("");
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  let [author, setAuthor] = useState("");
   const [publishYear, setPublishYear] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [publisher, setPublisher] = useState("");
@@ -60,6 +60,7 @@ const EditBooks = () => {
   }, []);
 
   const genresList = [
+    "Generic",
     "Science Fiction",
     "Fantasy",
     "Mystery",
@@ -106,11 +107,21 @@ const EditBooks = () => {
   };
   // Function to handle updating the shelfLocation array
   const handleShelfData = (updatedShelf, index) => {
-    setShelfLocation((prevState) => {
-      const newState = [...prevState];
-      newState[index] = updatedShelf; // Update the specific object
-      return newState;
-    });
+    const isDuplicate = shelfLocation.some((location, i) =>
+      location.shelf === updatedShelf.shelf && i !== index
+    );
+  
+    if (!isDuplicate) {
+      setButton(false)
+      setShelfLocation((prevState) => {
+        const newState = [...prevState];
+        newState[index] = updatedShelf; // Update the specific object
+        return newState;
+      });
+    } else {
+      setButton(true)
+      enqueueSnackbar("Duplicate shelf is Invalid", { variant: "error" });
+    }
   };
 
   // Resize image function
@@ -134,22 +145,10 @@ const EditBooks = () => {
     event.preventDefault();
     setButton(true); // set button disable
     let uploadedImageUrl = imageUrl;
+    if(typeof author === 'string'){
+      author = author.split(',')
+    }
 
-    const bookData = {
-      ISBN: "string",
-      authors: author,
-      genres: selectedGenres,
-      title: title,
-      publisher: publisher,
-      edition: edition,
-      publication_date: publishYear,
-      language: language,
-      number_of_copies_available: numCopies,
-      book_cover_image: uploadedImageUrl,
-      description: description,
-      shelf_locations: shelfLocation,
-    };
-    console.log(bookData)
     // try {
     //   if (image) {
     //     const resizedImage = await resizeFile(image);
@@ -180,6 +179,21 @@ const EditBooks = () => {
 
     //     imageUrl: uploadedImageUrl,
     //   };
+
+    const bookData = {
+      ISBN: ISBN,
+      authors: author,
+      genres: selectedGenres,
+      title: title,
+      publisher: publisher,
+      edition: edition,
+      publication_date: publishYear,
+      language: language,
+      number_of_copies_available: numCopies,
+      book_cover_image: uploadedImageUrl,
+      description: description,
+      shelf_locations: shelfLocation,
+    };
     //   const serverRes = await axios.put(
     //     `http://localhost:5555/books/${id}`,
     //     bookData
@@ -373,6 +387,7 @@ const EditBooks = () => {
                     handleShelfData(updatedShelf, index)}
                   }
                   onDelete={() => deleteShelfLocation(location.shelf)} // Pass delete handler
+                  isEdit={true}
                 />
               ))}
             </div>
