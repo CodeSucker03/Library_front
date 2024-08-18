@@ -1,19 +1,33 @@
 import React from "react";
-import { AiOutlineClose, AiOutlineLogout,AiOutlineHistory,AiOutlineUser } from "react-icons/ai";
+import { useParams, useNavigate } from "react-router-dom";
 
-const handleShowUserInfo = () => {
-  console.log("Show user info");
-};
+import {
+  AiOutlineClose,
+  AiOutlineLogout,
+  AiOutlineHistory,
+  AiOutlineUser,
+  AiOutlineUserSwitch,
+} from "react-icons/ai";
 
-const LogOut = () => {
-  console.log("LOGout");
-};
+const sideBar = ({ onClose, user }) => {
+  const navigate = useNavigate();
 
-const showHistory = () => {
-  console.log("Show history");
-}
+  const handleShowUserInfo = () => {
+    console.log("Show user info");
+  };
+  
+  const LogOut = () => {
+    console.log("LOGout");
+  };
+  
+  const showHistory = () => {
+    console.log("Show history");
+  };
+  
+  const memberManagement = () => {
+    navigate("/userMangement")
+  };
 
-const sideBar = ({ onClose }) => {
   return (
     <div
       className="fixed bg-gray-800 bg-opacity-80 top-0 left-0 right-0 bottom-0 z-50
@@ -36,18 +50,30 @@ const sideBar = ({ onClose }) => {
               className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
             >
               <AiOutlineUser className="text-red-300 text-5xl" />
-              <h2 className="my-1 font-semibold text-gray-600 text-2xl">Do Nhat Hoang</h2>
+              <h2 className="my-1 font-semibold text-gray-600 text-2xl">
+                Do Nhat Hoang
+              </h2>
             </button>
-            
+
             <button
               onClick={showHistory} // Replace with your function to show user info
               className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
             >
               <AiOutlineHistory className="text-red-300 text-4xl" />
-              <h1 className="my-1 font-medium text-gray-600 text-1xl">Read History</h1>
+              <h1 className="my-1 font-medium text-gray-600 text-1xl">
+                Read History
+              </h1>
             </button>
 
-
+            <button
+              onClick={memberManagement} // Replace with your function to show user info
+              className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
+            >
+              <AiOutlineUserSwitch className="text-red-300 text-4xl" />
+              <h1 className="my-1 font-medium text-gray-600 text-1xl">
+                Member management
+              </h1>
+            </button>
           </div>
           <div className="flex-grow w-full bg-green-500">
             {/* Second div content */}
@@ -60,8 +86,6 @@ const sideBar = ({ onClose }) => {
             </button>
           </div>
         </div>
-
-        
       </div>
     </div>
   );

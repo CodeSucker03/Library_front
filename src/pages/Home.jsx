@@ -4,7 +4,12 @@ import Spinner from "../components/Spinner";
 import SideBar from "../components/home/sideBar";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
-import { AiOutlineEdit,AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineEdit,
+  AiOutlineUser,
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import { MdOutlineAddBox, MdOutlineViewSidebar } from "react-icons/md";
 import BooksCard from "../components/home/BooksCard";
@@ -12,12 +17,13 @@ import logo from "../assets/logo.png";
 // import BooksTable from '../components/home/BooksTable'
 import SearchBar from "../components/SearchBar";
 
-const Home = () => {
+const Home = (user) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [pageNum, setPageNum] = useState(1);
 
   const handleLang = (event) => {
     setSelectedLanguage(event.target.value);
@@ -29,28 +35,27 @@ const Home = () => {
   // const [showType,setShowType] =useState('table')
   const [query, setQuery] = useState(""); // State to hold the search query
 
-  const fetchBooks = (searchQuery = "") => {
+  const fetchBooks = async (searchQuery = "", page) => {
     // default search value is empty
+    let url = ``;
     setLoading(true);
-    const url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=1`;
+    if (searchQuery == "") {
+      url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=${page}`;
+    }
     // const url = `http://localhost:5555/books/?query=${searchQuery}`
-    axios
-      .get(url)
-      .then((res) => {
-        setBooks(res.data.books);
-        // setBooks(res.data.data);
+    try {
+      let res = await axios.get(url);
+      setBooks(res.data.books);
 
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
-
   useEffect(() => {
-    fetchBooks(query); // Fetch books based on the query
-  }, [query]); // useEffect will re-run whenever the `query` state changes
+    fetchBooks(query, pageNum); // Fetch books based on the query
+  }, [query, pageNum]); // useEffect will re-run whenever the `query` state changes
 
   const handleSearch = (searchQuery) => {
     setQuery(searchQuery); // Update the query state, which triggers useEffect
@@ -106,9 +111,32 @@ const Home = () => {
           className="text-black text-4xl"
           onClick={() => setShowSideBar(true)}
         ></AiOutlineUser>
-        {showSideBar && <SideBar onClose={() => setShowSideBar(false)} />}
+        {showSideBar && <SideBar user={user} onClose={() => setShowSideBar(false)} />}
       </div>
-      {loading ? <Spinner /> : <BooksCard books={books}></BooksCard>}
+      {loading ? <Spinner /> : <BooksCard userId={user.ID} books={books}></BooksCard>}
+      <div className="flex justify-center bg-black">
+        <button
+          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
+          onClick={() => setPageNum(pageNum > 1 ? pageNum - 1 : 1)} // Decrement pageNum only if it's greater than 1
+        >
+          <AiOutlineArrowLeft></AiOutlineArrowLeft>
+        </button>
+        <button
+          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
+        >
+          {pageNum}
+        </button>
+        <button
+          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline"
+          onClick={() => setPageNum(pageNum + 1)}
+        >
+          <AiOutlineArrowRight></AiOutlineArrowRight>
+        </button>
+      </div>
+
       <div className="flex justify-center">
         {/* Footer content goes here */}
         <Footer></Footer>

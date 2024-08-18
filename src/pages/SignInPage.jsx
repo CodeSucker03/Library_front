@@ -3,26 +3,28 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png";
 import { useParams, useNavigate } from 'react-router-dom'
+import loginImg from "../assets/loginImg.png";
 function SignInPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState("Member");
 
   const navigate = useNavigate()
 
   const handleLogin = (event) => {
     event.preventDefault();  // Prevent form submission from reloading the page
     setError(''); // Clear previous error
-    axios
-    .post('http://localhost:5000/login', { username, password })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-      setError("Incorrect username or password.");
-  });
+    console.log(username, password, role)
+  //   axios
+  //   .post('http://localhost:5000/login', { username, password })
+  //   .then(response => {
+  //     console.log(response.data);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     setError("Incorrect username or password.");
+  // });
   }
 
   // const handleLogin = async (event) => {
@@ -51,14 +53,15 @@ function SignInPage() {
   };
 
   return (
-    <div>
-      <div className="bg-red-900 flex items-center p-4">
+    <div style={{ backgroundImage: `url(${loginImg})` }}
+     className="bg-cover bg-center min-h-screen flex flex-col">
+      <div className="bg-red-900 flex items-center p-1">
         <img src={logo} alt="Logo" className="w-26 h-32 mr-4" />
         <h1 className="text-3xl font-bold text-white">
           Hanoi University of Science and Technology
         </h1>
       </div>
-      <div className="flex pt-4 justify-center min-h-screen bg-gray-900">
+      <div className="flex pt-4 justify-center">
         <div className="w-full max-w-xs">
           <form
             onSubmit={handleLogin}
@@ -106,36 +109,36 @@ function SignInPage() {
               </label>
               <div className="flex items-center">
                 <input
-                  id="student"
+                 
                   type="radio"
                   name="role"
-                  value="student"
-                  checked={role === "student"}
+                  value="Member"
+                  checked={role === "Member"}
                   onChange={(e) => setRole(e.target.value)}
                   className="mr-2 leading-tight"
                 />
                 <label htmlFor="student" className="mr-4 text-gray-700 text-sm">
-                  Student
+                  Member
                 </label>
 
                 <input
-                  id="teacher"
                   type="radio"
                   name="role"
-                  value="teacher"
-                  checked={role === "teacher"}
+                  value="Faculty"
+                  checked={role === "Faculty"}
                   onChange={(e) => setRole(e.target.value)}
                   className="mr-2 leading-tight"
                 />
-                <label htmlFor="teacher" className="text-gray-700 text-sm">
-                  Teacher
+                <label  className="text-gray-700 text-sm">
+                  Faculty
                 </label>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
+                   px-4 rounded focus:outline-none focus:shadow-outline w-full"
               >
                 Login
               </button>

@@ -4,18 +4,22 @@ import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import formatYearMonth from "../helper";
-
-const hanldeBorrowBook = () => {
-  console.log("borrow");
-};
-
-const handleReserveBook = () => {
-  console.log("reserve");
-}
+import { useParams, useNavigate } from "react-router-dom";
 
 
-const BookModal = ({ book, onClose }) => {
+
+// const handleReserveBook = () => {
+//   console.log("reserve");
+// }
+
+
+const BookModal = ({ book, onClose, userId }) => {
   const [buttonState, setButton] = useState(false);
+  const navigate = useNavigate();
+
+  const hanldeBorrowBook = (ISBN,userId) => {
+    navigate(`/borrow_transaction/${ISBN}/${userId}`);
+  };
   return (
     <div // the background screen
       className="fixed bg-gray-800 bg-opacity-80 top-0 left-0 right-0 bottom-0 z-50
@@ -70,13 +74,13 @@ const BookModal = ({ book, onClose }) => {
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 text-white cursor-pointer"
             }`}
-            onClick={hanldeBorrowBook}
+            onClick={() => {hanldeBorrowBook(book.ISBN,userId)}}
             disabled={buttonState}
           >
             Borrow Now
           </button>
 
-          <button
+          {/* <button
             className={`px-10 py-2 rounded-full text-2xl ${
               buttonState
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -86,7 +90,7 @@ const BookModal = ({ book, onClose }) => {
             disabled={buttonState}
           >
             Schedule
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

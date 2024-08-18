@@ -7,7 +7,7 @@ import { BsInfoCircle } from "react-icons/bs";
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 import BookModal from "./BookModal";
 import formatYearMonth from "../helper";
-const BookSingleCard = ({ book }) => {
+const BookSingleCard = ({ book, userId }) => {
   const [showModal, setShowModal] = useState(false);
   return (
     <div
@@ -70,7 +70,7 @@ const BookSingleCard = ({ book }) => {
             </Link>
           </div>
           {showModal && (
-            <BookModal book={book} onClose={() => setShowModal(false)} />
+            <BookModal book={book} userId={userId} onClose={() => setShowModal(false)} />
           )}
         </div>
       </div>
