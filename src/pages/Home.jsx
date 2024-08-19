@@ -114,7 +114,7 @@ const Home = (user) => {
         {showSideBar && <SideBar user={user} onClose={() => setShowSideBar(false)} />}
       </div>
       {loading ? <Spinner /> : <BooksCard userId={user.ID} books={books}></BooksCard>}
-      <div className="flex justify-center bg-black">
+      <div className="flex justify-center">
         <button
           className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
@@ -128,13 +128,13 @@ const Home = (user) => {
         >
           {pageNum}
         </button>
-        <button
+        {books.length != 0 && <button
           className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline"
           onClick={() => setPageNum(pageNum + 1)}
         >
           <AiOutlineArrowRight></AiOutlineArrowRight>
-        </button>
+        </button>}
       </div>
 
       <div className="flex justify-center">

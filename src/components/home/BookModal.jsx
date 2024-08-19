@@ -1,23 +1,20 @@
 import { React, useState } from "react";
 import { PiBookOpenTextLight } from "react-icons/pi";
 import { BiUserCircle } from "react-icons/bi";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineTag } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import formatYearMonth from "../helper";
 import { useParams, useNavigate } from "react-router-dom";
-
-
 
 // const handleReserveBook = () => {
 //   console.log("reserve");
 // }
 
-
 const BookModal = ({ book, onClose, userId }) => {
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
 
-  const hanldeBorrowBook = (ISBN,userId) => {
+  const hanldeBorrowBook = (ISBN, userId) => {
     navigate(`/borrow_transaction/${ISBN}/${userId}`);
   };
   return (
@@ -53,15 +50,43 @@ const BookModal = ({ book, onClose, userId }) => {
               <PiBookOpenTextLight className="text-red-300 text-2xl"></PiBookOpenTextLight>
               <h1 className="my-1 text-xl">{book.title}</h1>
             </div>
+            <span className="text-base   mr-4 font-light">Edition</span>
+            <span>{book.edition}</span>
             <div className="flex justify-start items-center gap-x-2">
               <BiUserCircle className="text-red-300 text-2xl"></BiUserCircle>
               <h2 className="my-1">By: {book.authors}</h2>
             </div>
             <p className="mt-4">Description: </p>
-            <p className="my-2">
-              {book.description}
-            </p>
+            <p className="my-2">{book.description}</p>
+            <div className="flex flex-row my-4">
+              <AiOutlineTag className="text-red-300 text-2xl" />
+              <span className="text-sm mx-3 bg-red-400 rounded-md p-1">
+                {book.genres}
+              </span>
+            </div>
+            <span> Language: {book.language}</span>
 
+            <div className="my-8 p-3 border-2 border-gray-200 rounded-md">
+              <span className="text-xl mr-4 text-gray-500">
+                Shelf Locations
+              </span>
+              <div className="max-h-32 overflow-y-auto">
+                {" "}
+                {/* Set max height and make it scrollable */}
+                {book.shelf_locations.map((location, index) => (
+                  <div
+                    className={`m-2 text-sm ${
+                      location.status === "Available"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                    key={index}
+                  >
+                    Location: {location.shelf} {location.status}
+                  </div>
+                ))}
+              </div>
+            </div>
             {/* <h2 className="bg-red-300 px-4 py-1 rounded-lg m-3  w-50">
               <p>Publication Date: {formatYearMonth(book.publishYear)}</p>
             </h2> */}
@@ -74,7 +99,9 @@ const BookModal = ({ book, onClose, userId }) => {
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 text-white cursor-pointer"
             }`}
-            onClick={() => {hanldeBorrowBook(book.ISBN,userId)}}
+            onClick={() => {
+              hanldeBorrowBook(book.ISBN, userId);
+            }}
             disabled={buttonState}
           >
             Borrow Now

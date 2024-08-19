@@ -33,7 +33,32 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
           />
           <label className="text-gray-500">Available</label>
         </div>
-        <div>
+
+        <div className="mr-4">
+          <input
+            required
+            type="radio"
+            value="Borrowed"
+            checked={status === "Borrowed"}
+            onChange={(e) => setStatus(e.target.value)}
+            className="mr-2"
+          />
+          <label className="text-gray-500">Borrowed</label>
+        </div>
+
+        <div className="mr-4">
+          <input
+            required
+            type="radio"
+            value="Damaged"
+            checked={status === "Damaged"}
+            onChange={(e) => setStatus(e.target.value)}
+            className="mr-2"
+          />
+          <label className="text-gray-500">Damaged</label>
+        </div>
+        
+        {/* <div>
           <input
             type="radio"
             value="Reserved"
@@ -42,7 +67,7 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
             className="mr-2"
           />
           <label className="text-gray-500">Reserved</label>
-        </div>
+        </div> */}
       </div>
       {/* Delete Button */}
       {isEdit && (

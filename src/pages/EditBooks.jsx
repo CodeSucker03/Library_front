@@ -31,12 +31,11 @@ const EditBooks = () => {
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
-
   // Get present book
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/${id}`)
+      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${id}`)
       .then((response) => {
         // console.log(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/${id}`)
         setISBN(id);
@@ -89,11 +88,14 @@ const EditBooks = () => {
       ...shelfLocation,
       { shelf:'', status: "Available" },
     ]);
+    setNumCopies(numCopies + 1)
   };
 
   const deleteShelfLocation = (name) => {
     const updatedLocations = shelfLocation.filter(item => item.shelf !== name);
     setShelfLocation(updatedLocations);
+    setNumCopies(numCopies - 1)
+
   };
 
   const generateShelfLocations = (numCopies) => {
@@ -323,7 +325,7 @@ const EditBooks = () => {
             />
           </div>
 
-          {/* <div className="my-4">
+          <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Publish Year</label>
             <input
               type="date"
@@ -332,7 +334,7 @@ const EditBooks = () => {
               className="border-2 border-gray-500 px-4 py-2 w-full rounded-full shadow-sm 
             focus:outline-none focus:ring focus:ring-red-500 "
             ></input>
-          </div> */}
+          </div>
 
           {/* Language (Dropdown) */}
           <div className="my-4">
@@ -353,19 +355,8 @@ const EditBooks = () => {
           {/* Number of Copies (Number) */}
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">
-              Number of Copies
+              Number of Copies: {numCopies}
             </label>
-            <input
-              type="number"
-              value={numCopies}
-              onChange={(e) => {
-                const value = Math.max(0, e.target.value); // Ensure the value is not negative
-                setNumCopies(value);
-                generateShelfLocations(value);
-              }}
-              min="0" // Prevent negative numbers
-              className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
-            />
           </div>
 
           {/* Generate Shelf Locations (Based on Number of Copies) */}

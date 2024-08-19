@@ -23,6 +23,7 @@ const CreateBooks = () => {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0); // State to track upload progress
   const [buttonState, setButton] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -61,6 +62,20 @@ const CreateBooks = () => {
         status: ``, // cycling through statuses
       }))
     );
+  };
+
+  const handleAuthorChange = (e) => {
+    const value = e.target.value;
+
+    // Regex for validating comma-separated strings
+    const regex = /^[a-zA-Z\s]+(,\s*[a-zA-Z\s]*)*$/;
+
+    if (value === "" || regex.test(value)) {
+      setAuthor(value);
+      setError("");
+    } else {
+      setError("Please enter a valid comma-separated list of names.");
+    }
   };
 
   // Resize image function
@@ -102,7 +117,11 @@ const CreateBooks = () => {
   const handleSaveBook = async (event) => {
     event.preventDefault();
     setButton(true); // set button disable
-
+    if (selectedGenres.length === 0) {
+      enqueueSnackbar('Please select at least one genre', { variant: 'warning' });
+      setButton(false); // set button enable
+      return;
+    }
     if (image) {
       try {
         const resizedImage = await resizeFile(image);
@@ -125,12 +144,6 @@ const CreateBooks = () => {
           }
         );
         const uploadedImageUrl = response.data.secure_url;
-        //     const bookData = {
-        //       title,
-        //       author,
-        //       publishYear,
-        //       imageUrl: uploadedImageUrl,
-        //     };
         const bookData = {
           ISBN: ISBN,
           authors: author.split(","),
@@ -146,13 +159,13 @@ const CreateBooks = () => {
           shelf_locations: shelfLocation,
         };
         console.log(bookData);
-        // const serverRes = await axios.post(
-        //   `http://localhost:5555/books`,
-        //   bookData
-        // );
-        // console.log(serverRes);
-        // navigate("/");
-        // enqueueSnackbar("Book created successfully!", { variant: "success" });
+        const serverRes = await axios.post(
+          `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book`,
+          bookData
+        );
+        console.log(serverRes);
+        navigate("/");
+        enqueueSnackbar("Book created successfully!", { variant: "success" });
       } catch (error) {
         console.log(error);
         enqueueSnackbar("Image upload failed", { variant: "error" });
@@ -169,25 +182,25 @@ const CreateBooks = () => {
       <h1 className="text-3xl my-4">Create Book</h1>
       {loading ? <Spinner /> : ""}
       <div
-        className="flex flex-col border-2 border-gray-400 rounded-xl w-[600px]
-      hover:shadow-2xl p-4 mx-auto"
+        className="flex flex-col border-2 border-gray-400 rounded-xl w-[800px]
+      hover:shadow-2xl p-4 mx-auto px-20"
       >
         <form onSubmit={handleSaveBook}>
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Authors</label>
             <p className="text-gray-400 font-extralight p-1">
-              If multiple authors, seperate by comma (ex: Name1, Name2)
+              If multiple authors, separate by comma (ex: Name1, Name2)
             </p>
             <input
               type="text"
               value={author}
               required
-              onChange={(e) => setAuthor(e.target.value)}
+              onChange={handleAuthorChange}
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
              focus:ring-red-500 rounded-full"
-            ></input>
+            />
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
-
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Genres</label>
             <div className="flex flex-wrap">
@@ -196,7 +209,7 @@ const CreateBooks = () => {
                   <label className="text-gray-700">
                     <input
                       type="checkbox"
-                      checked={genre == "Generic"}
+                      checked={selectedGenres.includes(genre)} // Correctly binding checked status
                       value={genre}
                       onChange={handleCheckboxChange}
                       className="mr-2"
@@ -309,18 +322,22 @@ const CreateBooks = () => {
           <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
           {/* Generate Shelf Locations (Based on Number of Copies) */}
           {shelfLocation.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-2">
-              {shelfLocation.map((location, index) => (
-                location.status = "Available",
-                <ShelfLocation
-                  key={location.shelf}
-                  shelf={location}
-                  onShelfDataChange={(updatedShelf) =>
-                    handleShelfData(updatedShelf, index)
-                  }
-                  isEdit={false}
-                />
-              ))}
+            <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 pt-2">
+              {shelfLocation.map(
+                (location, index) => (
+                  (location.status = "Available"),
+                  (
+                    <ShelfLocation
+                      key={location.shelf}
+                      shelf={location}
+                      onShelfDataChange={(updatedShelf) =>
+                        handleShelfData(updatedShelf, index)
+                      }
+                      isEdit={false}
+                    />
+                  )
+                )
+              )}
             </div>
           )}
 

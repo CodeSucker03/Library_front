@@ -11,9 +11,8 @@ import {
 
 const sideBar = ({ onClose, user }) => {
   const navigate = useNavigate();
-
   const handleShowUserInfo = () => {
-    console.log("Show user info");
+    navigate(`/user/details/${user.ID}`);
   };
   
   const LogOut = () => {

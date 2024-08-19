@@ -15,7 +15,7 @@ const ShowBooks = () => {
       setLoading(true)
       axios
       // .get(`http://localhost:5555/books/${id}`)
-      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/${id}`)
+      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${id}`)
       .then((response) =>{
           setBook(response.data)
           setShelfLocation(response.data.shelf_locations)
@@ -85,14 +85,14 @@ const ShowBooks = () => {
           <span className='text-xl mr-4 text-gray-500'>Number of Copies</span>
           <span>{book.number_of_copies_available}</span>
         </div>
-        <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
+        {/* <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
           <span className='text-xl mr-4 text-gray-500'>Create Time</span>
           <span>{new Date(book.createdAt).toString()}</span>
         </div>
         <div className='my-4 px-24 p-3 border-2 border-gray-200 rounded-full'>
           <span className='text-xl mr-4 text-gray-500'>Last Update Time</span>
           <span>{new Date(book.updatedAt).toString()}</span>
-        </div>
+        </div> */}
       </div>
     </div>
     )}
