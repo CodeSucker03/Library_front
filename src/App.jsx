@@ -10,6 +10,7 @@ import SignUpPage from './pages/SignUpPage'
 import UsersTable from './pages/UserManagement'
 import Transaction from './pages/Transaction'
 import UserInfo from './pages/UserInfo'
+import UserHistory from './pages/UserHistory'
 
 
 const App = () => {
@@ -20,6 +21,8 @@ const App = () => {
       <Route path='/register' element={<SignUpPage/>}/>
       <Route path='/userMangement' element={<UsersTable/>}/>
       <Route path="/user/details/:id" element={<UserInfo />} />
+      <Route path="/user/history/:id" element={<UserInfo />} />
+
 
       <Route path="/books/create" element={<CreateBooks />} />
       <Route path="/books/details/:id" element={<ShowBooks />} />

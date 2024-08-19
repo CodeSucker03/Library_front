@@ -17,10 +17,12 @@ const sideBar = ({ onClose, user }) => {
   
   const LogOut = () => {
     console.log("LOGout");
+    navigate(`/login`)
   };
   
   const showHistory = () => {
     console.log("Show history");
+    navigate(`/user/history/${user.ID}`)
   };
   
   const memberManagement = () => {
