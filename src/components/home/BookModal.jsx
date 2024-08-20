@@ -13,9 +13,10 @@ import { useParams, useNavigate } from "react-router-dom";
 const BookModal = ({ book, onClose, userId }) => {
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("userRole") || "defaultRole"; // Provide a fallback if needed
 
-  const hanldeBorrowBook = (ISBN, userId) => {
-    navigate(`/borrow_transaction/${ISBN}/${userId}`);
+  const hanldeBorrowBook = (ISBN) => {
+    navigate(`/borrow_transaction/${ISBN}`);
   };
   return (
     <div // the background screen
@@ -32,14 +33,14 @@ const BookModal = ({ book, onClose, userId }) => {
           className="absolute right-6 top-6 text-3xl text-red-600 cursor-pointer"
           onClick={onClose}
         />
-        <div className="flex">
+        <div className="flex ">
           {/* Image Container */}
           <div className="w-1/3 m-3">
             {book.book_cover_image && (
               <img
                 src={book.book_cover_image}
                 alt={`${book.title} cover`}
-                className="w-full max-h-full object-cover rounded-lg shadow-lg"
+                className="w-full h-full object-cover rounded-lg shadow-lg"
               />
             )}
           </div>
@@ -56,7 +57,7 @@ const BookModal = ({ book, onClose, userId }) => {
               <BiUserCircle className="text-red-300 text-2xl"></BiUserCircle>
               <h2 className="my-1">By: {book.authors}</h2>
             </div>
-            <p className="mt-4">Description: </p>
+            <p className="mt-4 break-words">Description: </p>
             <p className="my-2">{book.description}</p>
             <div className="flex flex-row my-4">
               <AiOutlineTag className="text-red-300 text-2xl" />
@@ -93,19 +94,21 @@ const BookModal = ({ book, onClose, userId }) => {
           </div>
         </div>
         <div className="flex justify-evenly my-4">
-          <button
-            className={`px-10 py-2  rounded-full text-2xl ${
-              buttonState
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 text-white cursor-pointer"
-            }`}
-            onClick={() => {
-              hanldeBorrowBook(book.ISBN, userId);
-            }}
-            disabled={buttonState}
-          >
-            Borrow Now
-          </button>
+          {userRole == "Member" && (
+            <button
+              className={`px-10 py-2  rounded-full text-2xl ${
+                buttonState
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 text-white cursor-pointer"
+              }`}
+              onClick={() => {
+                hanldeBorrowBook(book.ISBN);
+              }}
+              disabled={buttonState}
+            >
+              Borrow Now
+            </button>
+          )}
 
           {/* <button
             className={`px-10 py-2 rounded-full text-2xl ${

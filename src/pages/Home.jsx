@@ -16,9 +16,11 @@ import BooksCard from "../components/home/BooksCard";
 import logo from "../assets/logo.png";
 // import BooksTable from '../components/home/BooksTable'
 import SearchBar from "../components/SearchBar";
+import { enqueueSnackbar } from "notistack";
 
-const Home = (user) => {
+const Home = () => {
   const [books, setBooks] = useState([]);
+  const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -53,6 +55,19 @@ const Home = (user) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let userId = localStorage.getItem("userId")
+    axios
+      .get(
+        `https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}`
+      )
+      .then((res) => {
+       setUserName(res.data.name)
+      })
+      .catch((error) => {console.log(error)});
+  }, [] );
+
   useEffect(() => {
     fetchBooks(query, pageNum); // Fetch books based on the query
   }, [query, pageNum]); // useEffect will re-run whenever the `query` state changes
@@ -111,9 +126,15 @@ const Home = (user) => {
           className="text-black text-4xl"
           onClick={() => setShowSideBar(true)}
         ></AiOutlineUser>
-        {showSideBar && <SideBar user={user} onClose={() => setShowSideBar(false)} />}
+        {showSideBar && (
+          <SideBar userName={userName} onClose={() => setShowSideBar(false)} />
+        )}
       </div>
-      {loading ? <Spinner /> : <BooksCard userId={user.ID} books={books}></BooksCard>}
+      {loading ? (
+        <Spinner />
+      ) : (
+        <BooksCard books={books}></BooksCard>
+      )}
       <div className="flex justify-center">
         <button
           className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
@@ -128,13 +149,15 @@ const Home = (user) => {
         >
           {pageNum}
         </button>
-        {books.length != 0 && <button
-          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+        {books.length != 0 && (
+          <button
+            className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline"
-          onClick={() => setPageNum(pageNum + 1)}
-        >
-          <AiOutlineArrowRight></AiOutlineArrowRight>
-        </button>}
+            onClick={() => setPageNum(pageNum + 1)}
+          >
+            <AiOutlineArrowRight></AiOutlineArrowRight>
+          </button>
+        )}
       </div>
 
       <div className="flex justify-center">

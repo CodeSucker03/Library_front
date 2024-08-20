@@ -16,21 +16,23 @@ import UserHistory from './pages/UserHistory'
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home/>} />
+      <Route path="/home/:userRole" element={<Home/>} />
       <Route path='/login' element={<SignInPage/>}/>
       <Route path='/register' element={<SignUpPage/>}/>
       <Route path='/userMangement' element={<UsersTable/>}/>
-      <Route path="/user/details/:id" element={<UserInfo />} />
-      <Route path="/user/history/:id" element={<UserInfo />} />
+      <Route path="/user/details/:userId" element={<UserInfo />} />
+      <Route path="/user/history/:userId" element={<UserHistory />} />
 
 
       <Route path="/books/create" element={<CreateBooks />} />
       <Route path="/books/details/:id" element={<ShowBooks />} />
       <Route path="/books/edit/:id" element={<EditBooks />} />
       <Route path="/books/delete/:id" element={<DeleteBooks />} />
-      <Route path="/borrow_transaction/:bookId/:userId" element={<Transaction />} />
+      <Route path="/borrow_transaction/:bookId" element={<Transaction />} />
     </Routes>
   )
 }
+
+// DmM@tKh@uKhovl123
 
 export default App

@@ -1,4 +1,4 @@
-import React from "react";
+import  React,{ useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import {
@@ -9,24 +9,27 @@ import {
   AiOutlineUserSwitch,
 } from "react-icons/ai";
 
-const sideBar = ({ onClose, user }) => {
+const sideBar = ({ onClose, userName }) => {
+  const [userRole, setRole] = useState(localStorage.getItem("userRole"));
+  let userId = localStorage.getItem("userId")
   const navigate = useNavigate();
   const handleShowUserInfo = () => {
-    navigate(`/user/details/${user.ID}`);
+    navigate(`/user/details/${userId}`);
   };
-  
+
   const LogOut = () => {
-    console.log("LOGout");
-    navigate(`/login`)
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+    sessionStorage.clear();
+    navigate(`/login`);
   };
-  
+
   const showHistory = () => {
-    console.log("Show history");
-    navigate(`/user/history/${user.ID}`)
+    navigate(`/user/history/${user.ID}`);
   };
-  
+
   const memberManagement = () => {
-    navigate("/userMangement")
+    navigate("/userMangement");
   };
 
   return (
@@ -46,35 +49,40 @@ const sideBar = ({ onClose, user }) => {
               className="absolute right-6 top-6 text-3xl text-red-600 cursor-pointer"
               onClick={onClose}
             />
+
+            {/* User Name and logo */}
             <button
-              onClick={handleShowUserInfo} // Replace with your function to show user info
+              onClick={handleShowUserInfo}
               className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
             >
               <AiOutlineUser className="text-red-300 text-5xl" />
               <h2 className="my-1 font-semibold text-gray-600 text-2xl">
-                Do Nhat Hoang
+                {userName}
               </h2>
             </button>
+            {userRole == "Member" && (
+              <button
+                onClick={showHistory}
+                className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
+              >
+                <AiOutlineHistory className="text-red-300 text-4xl" />
+                <h1 className="my-1 font-medium text-gray-600 text-1xl">
+                  Read History
+                </h1>
+              </button>
+            )}
 
-            <button
-              onClick={showHistory} // Replace with your function to show user info
-              className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
-            >
-              <AiOutlineHistory className="text-red-300 text-4xl" />
-              <h1 className="my-1 font-medium text-gray-600 text-1xl">
-                Read History
-              </h1>
-            </button>
-
-            <button
-              onClick={memberManagement} // Replace with your function to show user info
-              className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
-            >
-              <AiOutlineUserSwitch className="text-red-300 text-4xl" />
-              <h1 className="my-1 font-medium text-gray-600 text-1xl">
-                Member management
-              </h1>
-            </button>
+            {userRole == "Librarian" && (
+              <button
+                onClick={memberManagement} // Replace with your function to show user info
+                className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
+              >
+                <AiOutlineUserSwitch className="text-red-300 text-4xl" />
+                <h1 className="my-1 font-medium text-gray-600 text-1xl">
+                  Member management
+                </h1>
+              </button>
+            )}
           </div>
           <div className="flex-grow w-full bg-green-500">
             {/* Second div content */}

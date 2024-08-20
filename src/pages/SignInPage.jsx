@@ -2,48 +2,62 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png";
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from "react-router-dom";
 import loginImg from "../assets/loginImg.png";
 function SignInPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [role, setRole] = useState("Member");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogin = (event) => {
-    event.preventDefault();  // Prevent form submission from reloading the page
-    setError(''); // Clear previous error
-    console.log(username, password, role)
-  //   axios
-  //   .post('http://localhost:5000/login', { username, password })
-  //   .then(response => {
-  //     console.log(response.data);
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //     setError("Incorrect username or password.");
-  // });
-  }
+    event.preventDefault(); // Prevent form submission from reloading the page
+    setError(""); // Clear previous error
+    console.log(email, password, role);
+    axios
+      .post(
+        "https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/login",
+        { email, password }
+      )
+      .then((response) => {
+        console.log(response.data);
+        let userId = response.data.user_id;
+        axios
+          .get(
+            `https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}`
+          )
+          .then((res) => {
+            let userRole = res.data.user_role;
+            localStorage.setItem("userRole", userRole);
+            localStorage.setItem("userId", userId);
+            navigate(`/home/${userRole}`);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        setError("Incorrect email or password.");
+      });
+  };
 
   // const handleLogin = async (event) => {
   //   event.preventDefault();
-  //   console.log("Logging in with", { username, password });
+  //   console.log("Logging in with", { email, password });
 
-  //   const response = await fakeAuthApi(username, password);
+  //   const response = await fakeAuthApi(email, password);
 
   //   if (response.success) {
   //     console.log("Login successful!");
   //   } else {
-  //     setError("Invalid username or password");
+  //     setError("Invalid email or password");
   //   }
   // };
 
-  const fakeAuthApi = (username, password) => {
+  const fakeAuthApi = (email, password) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (username === "admin" && password === "password") {
+        if (email === "admin" && password === "password") {
           resolve({ success: true });
         } else {
           resolve({ success: false });
@@ -53,8 +67,10 @@ function SignInPage() {
   };
 
   return (
-    <div style={{ backgroundImage: `url(${loginImg})` }}
-     className="bg-cover bg-center min-h-screen flex flex-col">
+    <div
+      style={{ backgroundImage: `url(${loginImg})` }}
+      className="bg-cover bg-center min-h-screen flex flex-col"
+    >
       <div className="bg-red-900 flex items-center p-1">
         <img src={logo} alt="Logo" className="w-26 h-32 mr-4" />
         <h1 className="text-3xl font-bold text-white">
@@ -71,15 +87,15 @@ function SignInPage() {
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="username"
+                htmlFor="email"
               >
-                Username
+                Email
               </label>
               <input
-                id="username"
+                id="email"
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -109,7 +125,6 @@ function SignInPage() {
               </label>
               <div className="flex items-center">
                 <input
-                 
                   type="radio"
                   name="role"
                   value="Member"
@@ -121,7 +136,7 @@ function SignInPage() {
                   Member
                 </label>
 
-                <input
+                {/* <input
                   type="radio"
                   name="role"
                   value="Faculty"
@@ -131,7 +146,7 @@ function SignInPage() {
                 />
                 <label  className="text-gray-700 text-sm">
                   Faculty
-                </label>
+                </label> */}
               </div>
             </div>
             <div className="flex items-center justify-between">

@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
-import { AiOutlineEdit, AiOutlineHistory } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineHistory} from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import logo from "../assets/logo.png";
 import BackButton from "../components/BackButton";
 import Footer from "./Footer";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 const UserHistory = () => {
-    const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState([]);
+  const { userId } = useParams();
+  const [loading, setLoading] = useState(false);
 
-  const fetchHistory = (searchQuery = "", page) => {
+  const fetchHistory = (searchQuery = "", page = 1) => {
     // default search value is empty
     let url = ``;
     setLoading(true);
     if (searchQuery == "") {
-      //   url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=${page}`;
+      url = `https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}/borrow_history`;
     }
     // const url = `http://localhost:5555/books/?query=${searchQuery}`
     axios
       .get(url)
       .then((res) => {
-        // setHistory(res.data);
-
+        setHistory(res.data.history);
         setLoading(false);
       })
       .catch((error) => {
@@ -32,8 +34,8 @@ const UserHistory = () => {
   };
 
   useEffect(() => {
-    fetchHistory(query, pageNum); // Fetch books based on the query
-  }, [query, pageNum]); // useEffect will re-run whenever the `query` state changes
+    fetchHistory(); // Fetch books based on the query
+  }, []); // useEffect will re-run whenever the `query` state changes
 
   return (
     <div className="flex flex-col">
@@ -47,34 +49,53 @@ const UserHistory = () => {
         <table className="w-full border-separate border-spacing-2">
           <thead>
             <tr>
-              <th className="border border-black">Book ID</th>
+              <th className="border border-black">Title</th>
               <th className="border border-black ">Issue Date</th>
               <th className="border border-black">Due Date</th>
+              <th className="border border-black">Return Date</th>
+              <th className="border border-black">Overdue Fine</th>
               <th className="border border-black">Manage</th>
             </tr>
           </thead>
           <tbody>
-            {/* Need fix */}
-            {history.map((user, index) => (
-              <tr key={user.ID} className="h-8">
-                <td className="border border-slate-700 text-center">
-                  {user.ID}
-                </td>
-                <td className="border border-slate-700 text-center max-md:hidden">
-                  {user.name}
-                </td>
-                <td className="border border-slate-700 text-center max-md:hidden">
-                  {user.membership_type}
-                </td>
-                <td className="border border-slate-700 text-center">
-                  <div className="flex justify-center gap-x-4">
-                    <AiOutlineEdit className="text-2xl text-yellow-600"></AiOutlineEdit>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {history.length > 0 && (
+              <>
+                {history.map((book, index) => (
+                  <tr key={index} className="h-8">
+                    <td className="border border-slate-700 text-center">
+                      {book.title}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {book.issue_date}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {book.due_date}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {book.return_date}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {book.overdue_fines}
+                    </td>
+                    <td className="border border-slate-700 text-center">
+                      <div className="flex justify-center gap-x-4">
+                        <AiOutlineEdit className="text-2xl text-yellow-600"></AiOutlineEdit>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </>
+            )}
+
           </tbody>
         </table>
+        {history.length == 0 && (
+        <div className="flex my-10  justify-center text-3xl font-light">
+          <AiOutlineHistory className="mx-5"></AiOutlineHistory>
+           No book borrowed
+        </div>
+        )}
+
       </div>
       <div className="flex justify-center">
         {/* Footer content goes here */}

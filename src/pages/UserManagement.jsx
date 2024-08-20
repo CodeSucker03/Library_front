@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import SearchBar from "../components/SearchBar";
-import { AiOutlineEdit, AiOutlineHistory } from "react-icons/ai";
+import {
+  AiOutlineEdit,
+  AiOutlineHistory,
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import logo from "../assets/logo.png";
 import BackButton from "../components/BackButton";
@@ -20,14 +25,13 @@ const UsersTable = () => {
     let url = ``;
     setLoading(true);
     if (searchQuery == "") {
-    //   url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=${page}`;
+      url = `https://sadnguyencoder.pythonanywhere.com/user/api/v1/users?per_page=5&page=${page}`;
     }
     // const url = `http://localhost:5555/books/?query=${searchQuery}`
     axios
       .get(url)
       .then((res) => {
-        
-        // setUsers(res.data);
+        setUsers(res.data.users);
 
         setLoading(false);
       })
@@ -66,9 +70,9 @@ const UsersTable = () => {
           </thead>
           <tbody>
             {users.map((user, index) => (
-              <tr key={user.ID} className="h-8">
+              <tr key={user.id} className="h-8">
                 <td className="border border-slate-700 text-center">
-                  {user.ID}
+                  {user.id}
                 </td>
                 <td className="border border-slate-700 text-center max-md:hidden">
                   {user.name}
@@ -81,14 +85,39 @@ const UsersTable = () => {
                 </td>
                 <td className="border border-slate-700 text-center">
                   <div className="flex justify-center gap-x-4">
-                    <BsInfoCircle className="text-2xl text-green-800"></BsInfoCircle>
-                    <AiOutlineEdit className="text-2xl text-yellow-600"></AiOutlineEdit>
+                    <Link to={`/user/history/${user.id}`}>
+                      <BsInfoCircle className="text-2xl text-red-800"></BsInfoCircle>
+                    </Link>
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center">
+        <button
+          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
+          onClick={() => setPageNum(pageNum > 1 ? pageNum - 1 : 1)} // Decrement pageNum only if it's greater than 1
+        >
+          <AiOutlineArrowLeft></AiOutlineArrowLeft>
+        </button>
+        <button
+          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
+        >
+          {pageNum}
+        </button>
+        {users.length != 0 && (
+          <button
+            className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                   px-4 rounded-2xl focus:outline-none focus:shadow-outline"
+            onClick={() => setPageNum(pageNum + 1)}
+          >
+            <AiOutlineArrowRight></AiOutlineArrowRight>
+          </button>
+        )}
       </div>
       <div className="flex justify-center">
         {/* Footer content goes here */}

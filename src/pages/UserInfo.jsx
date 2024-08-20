@@ -7,31 +7,33 @@ import { AiOutlineEdit, AiOutlineTag } from "react-icons/ai";
 
 const UserInfo = () => {
   const { userId } = useParams();
+  
   const [user, setUser] = useState({
-    id: "123",
-    name: "DNK",
-    address: "123dc",
-    phone_number: "5425252",
-    email_address: "123@dsd",
-    membership_type: "dm",
-    user_role: "user",
-    account_status: "active",
-  });
+    id: "",
+    name: "",
+    address: "",
+    phone_number: "",
+    email_address: "",
+    membership_type: "",
+    user_role: "",
+    account_status: "",
+  })
 
   const [isEditing, setIsEditing] = useState(false);
 
-  // useEffect(() => {
-  //   // Fetch user data from the API
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await axios.get(`/api/users/${userId}`);
-  //       setUser(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-  //   fetchUserData();
-  // }, [userId]);
+  useEffect(() => {
+    // Fetch user data from the API
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}`);
+        console.log(response.data)
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
