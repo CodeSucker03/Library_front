@@ -151,36 +151,36 @@ const EditBooks = () => {
       author = author.split(',')
     }
 
-    // try {
-    //   if (image) {
-    //     const resizedImage = await resizeFile(image);
-    //     const cloudName = "dehwipfaq";
-    //     const presetKey = "ml_default";
-    //     const formData = new FormData();
-    //     formData.append("file", resizedImage);
-    //     formData.append("upload_preset", presetKey);
-    //     // Upload image to cloud
-    //     const response = await axios.post(
-    //       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    //       formData,
-    //       {
-    //         onUploadProgress: (progressEvent) => {
-    //           const percentCompleted = Math.round(
-    //             (progressEvent.loaded * 100) / progressEvent.total
-    //           );
-    //           setUploadProgress(percentCompleted);
-    //         },
-    //       }
-    //     );
-    //     uploadedImageUrl = response.data.secure_url;
-    //   }
-    //   const bookData = {
-    //     title,
-    //     author,
-    //     publishYear,
+    try {
+      if (image) {
+        const resizedImage = await resizeFile(image);
+        const cloudName = "dehwipfaq";
+        const presetKey = "ml_default";
+        const formData = new FormData();
+        formData.append("file", resizedImage);
+        formData.append("upload_preset", presetKey);
+        // Upload image to cloud
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formData,
+          {
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadProgress(percentCompleted);
+            },
+          }
+        );
+        uploadedImageUrl = response.data.secure_url;
+      }
+      // const bookData = {
+      //   title,
+      //   author,
+      //   publishYear,
 
-    //     imageUrl: uploadedImageUrl,
-    //   };
+      //   imageUrl: uploadedImageUrl,
+      // };
 
     const bookData = {
       ISBN: ISBN,
@@ -196,18 +196,18 @@ const EditBooks = () => {
       description: description,
       shelf_locations: shelfLocation,
     };
-    //   const serverRes = await axios.put(
-    //     `http://localhost:5555/books/${id}`,
-    //     bookData
-    //   );
-    //   console.log(serverRes);
-    //   navigate("/");
-    //   enqueueSnackbar("Book Edited successfully!", { variant: "success" });
-    // } catch (error) {
-    //   console.log(error);
-    //   enqueueSnackbar("Edit failed", { variant: "error" });
-    //   setButton(false);
-    // }
+      const serverRes = await axios.put(
+        `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${ISBN}`,
+        bookData
+      );
+      console.log(serverRes);
+      navigate("/");
+      enqueueSnackbar("Book Edited successfully!", { variant: "success" });
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar("Edit failed", { variant: "error" });
+      setButton(false);
+    }
   };
   return (
     <div className="p-4">

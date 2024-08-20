@@ -1,0 +1,76 @@
+Date : 2024-08-20 19:39:58
+Directory : d:\react\mern\frontend
+Total : 37 files,  8435 codes, 169 comments, 228 blanks, all 8832 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JSON           |          2 |      5,952 |          0 |          2 |      5,954 |
+| JavaScript JSX |         24 |      2,410 |        167 |        211 |      2,788 |
+| JavaScript     |          5 |         50 |          2 |          9 |         61 |
+| HTML           |          1 |         13 |          0 |          1 |         14 |
+| Markdown       |          1 |          5 |          0 |          4 |          9 |
+| CSS            |          2 |          3 |          0 |          1 |          4 |
+| XML            |          2 |          2 |          0 |          0 |          2 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                            | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                               |         37 |      8,435 |        169 |        228 |      8,832 |
+| . (Files)                                                       |          8 |      6,012 |          2 |         13 |      6,027 |
+| public                                                          |          1 |          1 |          0 |          0 |          1 |
+| src                                                             |         28 |      2,422 |        167 |        215 |      2,804 |
+| src (Files)                                                     |          4 |         47 |          1 |         10 |         58 |
+| src\assets                                                      |          1 |          1 |          0 |          0 |          1 |
+| src\components                                                  |         11 |        510 |         44 |         64 |        618 |
+| src\components (Files)                                          |          6 |        196 |         13 |         32 |        241 |
+| src\components\home                                             |          5 |        314 |         31 |         32 |        377 |
+| src\pages                                                       |         12 |      1,864 |        122 |        141 |      2,127 |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                        | language       | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| d:\react\mern\frontend\.eslintrc.cjs                            | JavaScript     |         21 |          0 |          1 |         22 |
+| d:\react\mern\frontend\README.md                                | Markdown       |          5 |          0 |          4 |          9 |
+| d:\react\mern\frontend\index.html                               | HTML           |         13 |          0 |          1 |         14 |
+| d:\react\mern\frontend\package-lock.json                        | JSON           |      5,917 |          0 |          1 |      5,918 |
+| d:\react\mern\frontend\package.json                             | JSON           |         35 |          0 |          1 |         36 |
+| d:\react\mern\frontend\postcss.config.js                        | JavaScript     |          6 |          0 |          1 |          7 |
+| d:\react\mern\frontend\public\vite.svg                          | XML            |          1 |          0 |          0 |          1 |
+| d:\react\mern\frontend\src\App.css                              | CSS            |          0 |          0 |          1 |          1 |
+| d:\react\mern\frontend\src\App.jsx                              | JavaScript JSX |         31 |          1 |          7 |         39 |
+| d:\react\mern\frontend\src\assets\react.svg                     | XML            |          1 |          0 |          0 |          1 |
+| d:\react\mern\frontend\src\components\BackButton.jsx            | JavaScript JSX |         19 |          1 |          5 |         25 |
+| d:\react\mern\frontend\src\components\Dropdown.jsx              | JavaScript JSX |         47 |          0 |          6 |         53 |
+| d:\react\mern\frontend\src\components\SearchBar.jsx             | JavaScript JSX |         47 |          0 |          6 |         53 |
+| d:\react\mern\frontend\src\components\ShelfLocation.jsx         | JavaScript JSX |         66 |         12 |          8 |         86 |
+| d:\react\mern\frontend\src\components\Spinner.jsx               | JavaScript JSX |          9 |          0 |          4 |         13 |
+| d:\react\mern\frontend\src\components\helper.js                 | JavaScript     |          8 |          0 |          3 |         11 |
+| d:\react\mern\frontend\src\components\home\BookModal.jsx        | JavaScript JSX |        102 |         21 |          8 |        131 |
+| d:\react\mern\frontend\src\components\home\BookSingleCard.jsx   | JavaScript JSX |         81 |          6 |          6 |         93 |
+| d:\react\mern\frontend\src\components\home\BooksCard.jsx        | JavaScript JSX |         12 |          1 |          2 |         15 |
+| d:\react\mern\frontend\src\components\home\LanguageSelector.jsx | JavaScript JSX |         28 |          0 |          6 |         34 |
+| d:\react\mern\frontend\src\components\home\sideBar.jsx          | JavaScript JSX |         91 |          3 |         10 |        104 |
+| d:\react\mern\frontend\src\index.css                            | CSS            |          3 |          0 |          0 |          3 |
+| d:\react\mern\frontend\src\main.jsx                             | JavaScript JSX |         13 |          0 |          2 |         15 |
+| d:\react\mern\frontend\src\pages\CreateBooks.jsx                | JavaScript JSX |        358 |         12 |         24 |        394 |
+| d:\react\mern\frontend\src\pages\DeleteBooks.jsx                | JavaScript JSX |         57 |          3 |          5 |         65 |
+| d:\react\mern\frontend\src\pages\EditBooks.jsx                  | JavaScript JSX |        330 |         54 |         30 |        414 |
+| d:\react\mern\frontend\src\pages\Footer.jsx                     | JavaScript JSX |          8 |          0 |          1 |          9 |
+| d:\react\mern\frontend\src\pages\Home.jsx                       | JavaScript JSX |        150 |          7 |         15 |        172 |
+| d:\react\mern\frontend\src\pages\ShowBooks.jsx                  | JavaScript JSX |         90 |         10 |          5 |        105 |
+| d:\react\mern\frontend\src\pages\SignInPage.jsx                 | JavaScript JSX |        136 |         21 |          9 |        166 |
+| d:\react\mern\frontend\src\pages\SignUpPage.jsx                 | JavaScript JSX |        193 |          4 |         17 |        214 |
+| d:\react\mern\frontend\src\pages\Transaction.jsx                | JavaScript JSX |        110 |          4 |          7 |        121 |
+| d:\react\mern\frontend\src\pages\UserHistory.jsx                | JavaScript JSX |         98 |          3 |          8 |        109 |
+| d:\react\mern\frontend\src\pages\UserInfo.jsx                   | JavaScript JSX |        213 |          1 |         13 |        227 |
+| d:\react\mern\frontend\src\pages\UserManagement.jsx             | JavaScript JSX |        121 |          3 |          7 |        131 |
+| d:\react\mern\frontend\tailwind.config.js                       | JavaScript     |         10 |          1 |          2 |         13 |
+| d:\react\mern\frontend\vite.config.js                           | JavaScript     |          5 |          1 |          2 |          8 |
+| Total                                                           |                |      8,435 |        169 |        228 |      8,832 |
++-----------------------------------------------------------------+----------------+------------+------------+------------+------------+

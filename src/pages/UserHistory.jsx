@@ -41,11 +41,11 @@ const UserHistory = () => {
     <div className="flex flex-col">
       <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify-between">
         <img src={logo} alt="Logo" className="w-14 h-20 mr-4" />
-        <h1 className="text-3xl font-bold text-white">User read History</h1>
+        <h1 className="text-3xl font-bold text-white">User {userId} read History</h1>
         <SearchBar></SearchBar>
       </div>
       <div className="mt-28 mx-10">
-        <BackButton></BackButton>
+        <BackButton destination={"/userMangement"}></BackButton>
         <table className="w-full border-separate border-spacing-2">
           <thead>
             <tr>

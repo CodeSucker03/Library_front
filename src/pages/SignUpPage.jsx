@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import loginImg from "../assets/loginImg.png";
+import {
+  AiOutlineEdit,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineTag,
+} from "react-icons/ai";
 
 function SignUpPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showCurrPass, setShowCurrPass] = useState(false);
+
   const [passwordError, setPasswordError] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -12,31 +24,51 @@ function SignUpPage() {
   const [Id, setId] = useState("");
   const [role, setRole] = useState("Member");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const toggleCurrPassVisibility = () => setShowCurrPass(!showCurrPass);
+
 
   const handleSignup = async (event) => {
     event.preventDefault();
+    let userData = {
+      id: Id,
+      name: username,
+      phone_number: phone,
+      email_address: email,
+      password: password,
+    };
+
     
-    console.log("Signing up with", { username, password, role });
+    console.log(userData);
 
-    const response = await fakeSignupApi(username, password, role);
+    try {
+      const response = await axios.post(
+        `https://sadnguyencoder.pythonanywhere.com/user/api/v1/user`,
+        userData
+      );
 
-    if (response.success) {
-      console.log("Signup successful!");
-      // Handle successful signup (e.g., redirect, display success message, etc.)
-    } else {
-      setError("Signup failed. Please try again.");
+      // Check for success based on status code or response content
+      if (response.status === 200 || response.data.success) {
+        navigate("/login");
+        enqueueSnackbar("Account created successfully!", {
+          variant: "success",
+        });
+      } else {
+        // Extract error message from response
+        const errorMessage =
+          response.data.message || "Signup failed. Please try again.";
+        setError(errorMessage);
+      }
+    } catch (error) {
+      console.log(error)
+      // Handle network or unexpected errors
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+      setError(errorMessage);
     }
   };
 
-  const fakeSignupApi = (username, password, role) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true });
-      }, 1000);
-    });
-  };
-  
-  
   const validatePassword = () => {
     const errors = [];
     // Length Check
@@ -44,7 +76,8 @@ function SignUpPage() {
       errors.push("Password must be at least 8 characters long.");
     }
     // Complexity Check
-    const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const complexityRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!complexityRegex.test(password)) {
       errors.push(
         "Password must include uppercase, lowercase, number, and special character."
@@ -63,14 +96,17 @@ function SignUpPage() {
     validatePassword();
   }, [password]);
   return (
-    <>
+    <div
+      style={{ backgroundImage: `url(${loginImg})` }}
+      className="bg-cover bg-center min-h-screen flex flex-col"
+    >
       <div className="bg-red-900 flex items-center p-4">
         <img src={logo} alt="Logo" className="w-26 h-32 mr-4" />
         <h1 className="text-3xl font-bold text-white">
           Hanoi University of Science and Technology
         </h1>
       </div>
-      <div className="flex min-h-screen pt-4 justify-center bg-gray-800">
+      <div className="flex pt-4 justify-center">
         <div className="w-full max-w-xl">
           <form
             onSubmit={handleSignup}
@@ -85,9 +121,9 @@ function SignUpPage() {
               >
                 Student Id
               </label>
-              <p className="font-light text-gray-500 text-xs italic">
+              {/* <p className="font-light text-gray-500 text-xs italic">
                 Skip if you're not a student
-              </p>
+              </p> */}
               <input
                 id="Id"
                 type="text"
@@ -116,20 +152,22 @@ function SignUpPage() {
             </div>
 
             <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              />
+            <label className="font-semibold">Enter password:</label>
+              <div className="flex flex-row my-3 ">
+                <input
+                  required
+                  type={showCurrPass ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="border px-2 py-1 rounded-md ml-2"
+                />
+                <button type="button" onClick={toggleCurrPassVisibility}>
+                  {showCurrPass ? (
+                    <AiOutlineEyeInvisible className="mt-2 text-2xl" />
+                  ) : (
+                    <AiOutlineEye className="mt-2 text-2xl" />
+                  )}
+                </button>
+              </div>
               {passwordError && (
                 <p className="text-red-500 text-xs italic">{passwordError}</p>
               )}
@@ -206,7 +244,7 @@ function SignUpPage() {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

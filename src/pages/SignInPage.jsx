@@ -4,6 +4,7 @@ import axios from "axios";
 import logo from "../assets/logo.png";
 import { useParams, useNavigate } from "react-router-dom";
 import loginImg from "../assets/loginImg.png";
+
 function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +16,6 @@ function SignInPage() {
   const handleLogin = (event) => {
     event.preventDefault(); // Prevent form submission from reloading the page
     setError(""); // Clear previous error
-    console.log(email, password, role);
     axios
       .post(
         "https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/login",
@@ -53,18 +53,6 @@ function SignInPage() {
   //     setError("Invalid email or password");
   //   }
   // };
-
-  const fakeAuthApi = (email, password) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (email === "admin" && password === "password") {
-          resolve({ success: true });
-        } else {
-          resolve({ success: false });
-        }
-      }, 1000);
-    });
-  };
 
   return (
     <div

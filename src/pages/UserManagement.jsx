@@ -25,7 +25,7 @@ const UsersTable = () => {
     let url = ``;
     setLoading(true);
     if (searchQuery == "") {
-      url = `https://sadnguyencoder.pythonanywhere.com/user/api/v1/users?per_page=5&page=${page}`;
+      url = `https://sadnguyencoder.pythonanywhere.com/user/api/v1/users?per_page=8&page=${page}`;
     }
     // const url = `http://localhost:5555/books/?query=${searchQuery}`
     axios
@@ -40,19 +40,21 @@ const UsersTable = () => {
         setLoading(false);
       });
   };
-
+  // const handleSearch = (searchQuery) => {
+  //   setQuery(searchQuery); // Update the query state, which triggers useEffect
+  // };
   useEffect(() => {
     fetchUsers(query, pageNum); // Fetch books based on the query
   }, [query, pageNum]); // useEffect will re-run whenever the `query` state changes
 
   return (
     <div className="flex flex-col">
-      <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify-between">
+      <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify">
         <img src={logo} alt="Logo" className="w-14 h-20 mr-4" />
         <h1 className="text-3xl font-bold text-white">
           HUST Library Members Management
         </h1>
-        <SearchBar></SearchBar>
+        {/* <SearchBar onSearch={handleSearch}></SearchBar> */}
       </div>
       <div className="mt-28 mx-10">
         <BackButton></BackButton>
@@ -80,7 +82,11 @@ const UsersTable = () => {
                 <td className="border border-slate-700 text-center max-md:hidden">
                   {user.membership_type}
                 </td>
-                <td className="border border-slate-700 text-center">
+                <td
+                  className={`border border-slate-700 text-center ${
+                    user.account_status === "Active" ? "text-green-500" : "text-red-400"
+                  }`}
+                >
                   {user.account_status}
                 </td>
                 <td className="border border-slate-700 text-center">
