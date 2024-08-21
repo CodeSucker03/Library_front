@@ -1,5 +1,5 @@
-import  React,{ useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 import {
   AiOutlineClose,
@@ -11,7 +11,7 @@ import {
 
 const sideBar = ({ onClose, userName }) => {
   const [userRole, setRole] = useState(localStorage.getItem("userRole"));
-  let userId = localStorage.getItem("userId")
+  let userId = localStorage.getItem("userId");
   const navigate = useNavigate();
   const handleShowUserInfo = () => {
     navigate(`/user/details/${userId}`);
@@ -51,15 +51,24 @@ const sideBar = ({ onClose, userName }) => {
             />
 
             {/* User Name and logo */}
-            <button
-              onClick={handleShowUserInfo}
-              className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer"
-            >
+            <div className="flex justify-start items-center gap-x-2 mt-16 bg-transparent border-none cursor-pointer">
               <AiOutlineUser className="text-red-300 text-5xl" />
-              <h2 className="my-1 font-semibold text-gray-600 text-2xl">
-                {userName}
-              </h2>
-            </button>
+              {userRole != "" && (
+                <Link to={`/user/details/${userId}`}>
+                <h2 className="my-1 font-semibold text-gray-600 text-2xl">
+                  {userName}
+                </h2>
+                </Link>
+              )}
+              {userRole != "Member" && userRole != "Librarian" && (
+                <Link to={`/login`}>
+                  <h2 className="my-1 font-semibold text-gray-600 text-2xl">
+                    Login to borrow books
+                  </h2>
+                </Link>
+              )}
+              
+            </div>
             {userRole == "Member" && (
               <button
                 onClick={showHistory}

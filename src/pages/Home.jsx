@@ -159,7 +159,7 @@ const Home = () => {
               // preventing the modal from closing when clicking inside it.
               className="w-[1400px] max-w-full h-[350px] bg-red-800 rounded-2xl p-4 flex flex-col relative "
             >
-              <label className="text-xl mr-4 text-black">Genres</label>
+              <label className="text-xl mr-4 text-white font-bold">Genres</label>
               <div className="flex flex-wrap">
                 {genres.map((genre) => (
                   <div key={genre} className="mr-6">

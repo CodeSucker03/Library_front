@@ -40,20 +40,6 @@ function SignInPage() {
         setError("Incorrect email or password.");
       });
   };
-
-  // const handleLogin = async (event) => {
-  //   event.preventDefault();
-  //   console.log("Logging in with", { email, password });
-
-  //   const response = await fakeAuthApi(email, password);
-
-  //   if (response.success) {
-  //     console.log("Login successful!");
-  //   } else {
-  //     setError("Invalid email or password");
-  //   }
-  // };
-
   return (
     <div
       style={{ backgroundImage: `url(${loginImg})` }}
@@ -101,8 +87,15 @@ function SignInPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 
+                text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               />
+                <Link
+                  className="text-blue-700 underline underline-offset-2"
+                  to=""
+                >
+                  ForgotPassword ?
+                </Link>
             </div>
             {error && (
               <p className="text-red-500 text-xs italic mb-4">{error}</p>
@@ -123,6 +116,12 @@ function SignInPage() {
                 <label htmlFor="student" className="mr-4 text-gray-700 text-sm">
                   Member
                 </label>
+                <Link
+                  className="text-blue-700 underline underline-offset-2"
+                  to="/home/Guest/1"
+                >
+                  Guest
+                </Link>
 
                 {/* <input
                   type="radio"

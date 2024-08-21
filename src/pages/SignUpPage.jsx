@@ -131,8 +131,9 @@ function SignUpPage() {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="username"
               >
-                Username
+                Full name
               </label>
+              <p className="text-gray-500 text-xs italic">Ex: Nguyen Van A</p>
               <input
                 id="username"
                 type="text"
@@ -203,7 +204,7 @@ function SignUpPage() {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="email"
               >
-                Email
+                Email 
               </label>
               <input
                 id="email"
