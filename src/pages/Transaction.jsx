@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const Transaction = () => {
+  const [book, setBookId] = useState("");
+  const [status, setStatus] = useState(false);
+  const [message, setMess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+
   const { isbn } = useParams();
   const getCurrentDate = () => {
     const today = new Date();
@@ -37,7 +46,6 @@ const Transaction = () => {
     const month = String(newExpiration.getMonth() + 1).padStart(2, "0");
     const day = String(newExpiration.getDate()).padStart(2, "0");
     setExpirationDate(`${year}-${month}-${day}`);
-    
   };
   const handleExpirationChange = (e) => {
     setExpirationDate(e.target.value);
@@ -45,12 +53,49 @@ const Transaction = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const response = await post("/api/transactions", {
-    
-    
-    
+    setLoading(true);
+    let userId = localStorage.getItem("userId")
+    let bookID ={
+      book_copy_id : book
+    }
+    try {
+      const response = await axios.post(`https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}/borrow`,bookID)
+      console.log(response)
+      enqueueSnackbar("Book borrowed successfully", { variant: "success" });
+
+    }catch(error){
+      console.log(error)
+    }
   };
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(
+        `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${isbn}`
+      )
+      .then((response) => {
+        const availableLocation = response.data.shelf_locations.find(
+          (location) => location.status === "Available"
+        );
+
+        if (availableLocation) {
+          setBookId(availableLocation.book_id);
+          setStatus(true)
+          setMess("Book copy available !");
+          // You can use `bookId` here as needed
+        } else {
+          setError(true)
+          setMess("No copy available !");
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="p-4 flex-col">
@@ -70,6 +115,15 @@ const Transaction = () => {
             </h2>
             <h2 className="font-extralight  my-4">
               Expiration Date: {expirationDate}
+            </h2>
+            <h2
+              className={`m-2 text-xl ${
+                status
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {message}
             </h2>
           </div>
           {/* Form on the right */}

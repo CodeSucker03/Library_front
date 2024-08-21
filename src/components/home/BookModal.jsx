@@ -15,7 +15,6 @@ const BookModal = ({ book, onClose, userId }) => {
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
   const userRole = localStorage.getItem("userRole") || "defaultRole"; // Provide a fallback if needed
-
   const hanldeBorrowBook = (ISBN) => {
     navigate(`/borrow_transaction/${ISBN}`);
   };
@@ -113,7 +112,7 @@ const BookModal = ({ book, onClose, userId }) => {
               </Link>
             </div>
             <div className="flex justify-evenly my-4">
-              {userRole == "Member" && (
+              {userRole == "Member"  && (
                 <button
                   className={`px-10 py-2  rounded-full text-2xl ${
                     buttonState

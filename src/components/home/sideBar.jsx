@@ -84,7 +84,7 @@ const sideBar = ({ onClose, userName }) => {
               </button>
             )}
           </div>
-          <div className="flex-grow w-full bg-green-500">
+          <div className="flex-grow w-full">
             {/* Second div content */}
             <button
               onClick={LogOut}
