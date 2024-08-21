@@ -28,22 +28,23 @@ const CreateBooks = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // GENRE LIST ADD HERE
-  const genresList = [
-    "Generic",
-    "Science Fiction",
-    "Fantasy",
-    "Mystery",
-    "Romance",
-    "Thriller",
-    "Historical Fiction",
-    "Horror",
-    "Non-Fiction",
-    "Biography",
-    "Self-Help",
-    "Young Adult",
-    "Children's",
-  ];
+  const [genres, setGenres] = useState([])
+  const fetchGenres = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        'https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/genres?per_page=100&page=1'
+      );
+      setLoading(false);
+      setGenres(response.data.genres); // Assuming the response contains a 'genres' array
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+    }
+  };
+
+  useEffect( () => {
+    fetchGenres()
+  },[])
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -204,7 +205,7 @@ const CreateBooks = () => {
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Genres</label>
             <div className="flex flex-wrap">
-              {genresList.map((genre) => (
+              {genres.map((genre) => (
                 <div key={genre} className="mr-4">
                   <label className="text-gray-700">
                     <input
@@ -322,7 +323,7 @@ const CreateBooks = () => {
           <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
           {/* Generate Shelf Locations (Based on Number of Copies) */}
           {shelfLocation.length > 0 && (
-            <div className="grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 pt-2">
+            <div className="flex flex-col">
               {shelfLocation.map(
                 (location, index) => (
                   (location.status = "Available"),

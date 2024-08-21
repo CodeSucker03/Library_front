@@ -4,7 +4,7 @@ import { BsArrowLeft } from "react-icons/bs";
 
 const BackButton = ({ destination }) => {
   const userRole = localStorage.getItem("userRole") || "defaultRole";
-  const defaultDestination = `/home/${userRole}`;
+  const defaultDestination = `/home/${userRole}/1`;
   const finalDestination = destination || defaultDestination;
 
   return (

@@ -14,11 +14,10 @@ const BookSingleCard = ({ book, userId }) => {
   return (
     <div
       key={book.ISBN}
-      className="border-2 border-gray-200 rounded-lg px-4 py-2 m-4
+      className="border-2 border-gray-200 rounded-lg px-4 py-2 m-2
        relative hover:shadow-xl"
       onClick={() => setShowModal(true)}
     >
-      <button></button>
       <div className="flex flex-col ">
         <div className="flex-grow w-full">
           {/* First div content */}
@@ -27,7 +26,7 @@ const BookSingleCard = ({ book, userId }) => {
               <img
                 src={book.book_cover_image}
                 alt={`${book.title} cover`}
-                className="w-40 h-56 object-cover my-0 rounded-lg shadow-lg"
+                className="w-48 h-64 object-cover my-0 rounded-lg shadow-lg"
               />
             )}
           </div>
@@ -46,8 +45,19 @@ const BookSingleCard = ({ book, userId }) => {
 
             <div className="flex items-center gap-x-2 ">
               <BiUserCircle className="text-red-300 text-2xl" />
-              <h2 className="text-md break-words max-w-[170px]">
-                by: {book.authors}
+              <h2 className="text-md break-words max-w-[200px]">
+              <div className="flex justify-start items-center gap-x-2">
+              <div className="flex flex-wrap">
+                {book.authors.map((author, index) => (
+                  <span
+                    key={index}
+                    className="text-base mx-1 border border-slate-200  rounded-md p-1"
+                  >
+                    {author}
+                  </span>
+                ))}
+              </div>
+            </div>
               </h2>
             </div>
 

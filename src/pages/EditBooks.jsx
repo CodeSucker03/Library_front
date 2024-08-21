@@ -11,7 +11,7 @@ import ShelfLocation from "../components/ShelfLocation";
 const EditBooks = () => {
   const [ISBN, setISBN] = useState("");
   const [title, setTitle] = useState("");
-  let [author, setAuthor] = useState("");
+  const [author, setAuthor] = useState("");
   const [publishYear, setPublishYear] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [publisher, setPublisher] = useState("");
@@ -31,11 +31,32 @@ const EditBooks = () => {
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const [genres, setGenres] = useState([]);
+  const fetchGenres = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        "https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/genres?per_page=100&page=1"
+      );
+      setLoading(false);
+      setGenres(response.data.genres); // Assuming the response contains a 'genres' array
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGenres();
+  }, []);
+
   // Get present book
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${id}`)
+      .get(
+        `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${id}`
+      )
       .then((response) => {
         // console.log(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/${id}`)
         setISBN(id);
@@ -58,22 +79,6 @@ const EditBooks = () => {
       });
   }, []);
 
-  const genresList = [
-    "Generic",
-    "Science Fiction",
-    "Fantasy",
-    "Mystery",
-    "Romance",
-    "Thriller",
-    "Historical Fiction",
-    "Horror",
-    "Non-Fiction",
-    "Biography",
-    "Self-Help",
-    "Young Adult",
-    "Children's",
-  ];
-
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
@@ -84,18 +89,16 @@ const EditBooks = () => {
   };
 
   const addShelfLocation = () => {
-    setShelfLocation([
-      ...shelfLocation,
-      { shelf:'', status: "Available" },
-    ]);
-    setNumCopies(numCopies + 1)
+    setShelfLocation([...shelfLocation, { shelf: "", status: "Available" }]);
+    setNumCopies(numCopies + 1);
   };
 
   const deleteShelfLocation = (name) => {
-    const updatedLocations = shelfLocation.filter(item => item.shelf !== name);
+    const updatedLocations = shelfLocation.filter(
+      (item) => item.shelf !== name
+    );
     setShelfLocation(updatedLocations);
-    setNumCopies(numCopies - 1)
-
+    setNumCopies(numCopies - 1);
   };
 
   const generateShelfLocations = (numCopies) => {
@@ -109,19 +112,19 @@ const EditBooks = () => {
   };
   // Function to handle updating the shelfLocation array
   const handleShelfData = (updatedShelf, index) => {
-    const isDuplicate = shelfLocation.some((location, i) =>
-      location.shelf === updatedShelf.shelf && i !== index
+    const isDuplicate = shelfLocation.some(
+      (location, i) => location.shelf === updatedShelf.shelf && i !== index
     );
-  
+
     if (!isDuplicate) {
-      setButton(false)
+      setButton(false);
       setShelfLocation((prevState) => {
         const newState = [...prevState];
         newState[index] = updatedShelf; // Update the specific object
         return newState;
       });
     } else {
-      setButton(true)
+      setButton(true);
       enqueueSnackbar("Duplicate shelf is Invalid", { variant: "error" });
     }
   };
@@ -147,8 +150,8 @@ const EditBooks = () => {
     event.preventDefault();
     setButton(true); // set button disable
     let uploadedImageUrl = imageUrl;
-    if(typeof author === 'string'){
-      author = author.split(',')
+    if (typeof author === "string") {
+      author = author.split(",");
     }
 
     try {
@@ -182,20 +185,21 @@ const EditBooks = () => {
       //   imageUrl: uploadedImageUrl,
       // };
 
-    const bookData = {
-      ISBN: ISBN,
-      authors: author,
-      genres: selectedGenres,
-      title: title,
-      publisher: publisher,
-      edition: edition,
-      publication_date: publishYear,
-      language: language,
-      number_of_copies_available: numCopies,
-      book_cover_image: uploadedImageUrl,
-      description: description,
-      shelf_locations: shelfLocation,
-    };
+      const bookData = {
+        ISBN: ISBN,
+        authors: author,
+        genres: selectedGenres,
+        title: title,
+        publisher: publisher,
+        edition: edition,
+        publication_date: publishYear,
+        language: language,
+        number_of_copies_available: numCopies,
+        book_cover_image: uploadedImageUrl,
+        description: description,
+        shelf_locations: shelfLocation,
+      };
+      console.log(bookData);
       const serverRes = await axios.put(
         `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn/${ISBN}`,
         bookData
@@ -253,12 +257,11 @@ const EditBooks = () => {
             <label className="text-xl mr-4 text-gray-500">ISBN</label>
             <input
               type="text"
-              value={ISBN}
+              value={ISBN || ""}
               onChange={(e) => setISBN(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full rounded-full"
             />
           </div>
-
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Authors</label>
             <p className="text-gray-400 font-extralight p-1">
@@ -266,22 +269,22 @@ const EditBooks = () => {
             </p>
             <input
               type="text"
-              value={author}
+              value={author || ""}
               onChange={(e) => setAuthor(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
              focus:ring-red-500 rounded-full"
             ></input>
           </div>
-
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Genres</label>
             <div className="flex flex-wrap">
-              {genresList.map((genre) => (
+              {genres.map((genre) => (
                 <div key={genre} className="mr-4">
                   <label className="text-gray-700">
                     <input
                       type="checkbox"
-                      value={genre}
+                      value={genre || ""}
+                      checked={selectedGenres.includes(genre)}
                       onChange={handleCheckboxChange}
                       className="mr-2"
                     />
@@ -291,51 +294,46 @@ const EditBooks = () => {
               ))}
             </div>
           </div>
-
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Title</label>
             <input
               type="text"
-              value={title}
+              value={title || ""}
               onChange={(e) => setTitle(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
              focus:ring-red-500 rounded-full"
             ></input>
           </div>
-
           {/* Publisher */}
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Publisher</label>
             <input
               type="text"
-              value={publisher}
+              value={publisher || ""}
               onChange={(e) => setPublisher(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
             />
           </div>
-
           {/* Edition (Number) */}
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Edition</label>
             <input
               type="number"
-              value={edition}
+              value={edition || ""}
               onChange={(e) => setEdition(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-full"
             />
           </div>
-
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Publish Year</label>
             <input
               type="date"
-              value={publishYear}
+              value={publishYear || ""}
               onChange={(e) => setPublishYear(e.target.value)}
               className="border-2 border-gray-500 px-4 py-2 w-full rounded-full shadow-sm 
             focus:outline-none focus:ring focus:ring-red-500 "
             ></input>
           </div>
-
           {/* Language (Dropdown) */}
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Language</label>
@@ -351,14 +349,12 @@ const EditBooks = () => {
               <option value="French">Japanese</option>
             </select>
           </div>
-
-          {/* Number of Copies (Number) */}
+          Number of Copies (Number)
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">
               Number of Copies: {numCopies}
             </label>
           </div>
-
           {/* Generate Shelf Locations (Based on Number of Copies) */}
           <label className="text-xl mr-4 text-gray-500">Shelf Location</label>
           {/* Button to Add New Shelf Location */}
@@ -369,21 +365,24 @@ const EditBooks = () => {
             Add Shelf Location
           </MdOutlineAddBox>
           {shelfLocation.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-2">
-              {shelfLocation.map((location, index) => (
-                <ShelfLocation
-                  key={location.shelf}
-                  shelf={location}
-                  onShelfDataChange={(updatedShelf) =>{
-                    handleShelfData(updatedShelf, index)}
-                  }
-                  onDelete={() => deleteShelfLocation(location.shelf)} // Pass delete handler
-                  isEdit={true}
-                />
-              ))}
+            <div className="flex flex-col">
+              {shelfLocation.map((location, index) => {
+                const key = location.book_id;
+                console.log(`Rendering ShelfLocation with key: ${key}`);
+                return (
+                  <ShelfLocation
+                    key={location.shelf}
+                    shelf={location}
+                    onShelfDataChange={(updatedShelf) => {
+                      handleShelfData(updatedShelf, index);
+                    }}
+                    onDelete={() => deleteShelfLocation(location.shelf)} // Pass delete handler
+                    isEdit={true}
+                  />
+                );
+              })}
             </div>
           )}
-
           {/* Description */}
           <div className="my-4">
             <label className="text-xl mr-4 text-gray-500">Description</label>
@@ -393,7 +392,6 @@ const EditBooks = () => {
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring focus:ring-red-500 rounded-lg"
             />
           </div>
-
           <button
             className={`p-2 mx-64 min-w-40 rounded-full ${
               buttonState

@@ -3,7 +3,7 @@ import axios from "axios";
 import Spinner from "../components/Spinner";
 import SideBar from "../components/home/sideBar";
 import Footer from "./Footer";
-import { Link } from "react-router-dom";
+import { Link,useParams, useNavigate } from "react-router-dom";
 import {
   AiOutlineEdit,
   AiOutlineUser,
@@ -14,7 +14,6 @@ import { BsInfoCircle } from "react-icons/bs";
 import { MdOutlineAddBox, MdOutlineViewSidebar } from "react-icons/md";
 import BooksCard from "../components/home/BooksCard";
 import logo from "../assets/logo.png";
-// import BooksTable from '../components/home/BooksTable'
 import SearchBar from "../components/SearchBar";
 import { enqueueSnackbar } from "notistack";
 
@@ -25,7 +24,12 @@ const Home = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
-  const [pageNum, setPageNum] = useState(1);
+  const {userRole , page} =useParams()
+  const navigate = useNavigate();
+  
+  
+  const [pageNum, setPageNum] = useState(parseInt(page));
+
 
   const handleLang = (event) => {
     setSelectedLanguage(event.target.value);
@@ -43,11 +47,14 @@ const Home = () => {
     setLoading(true);
     if (searchQuery == "") {
       url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books?per_page=5&page=${page}`;
+
+    }else{
+    url = `https://sadnguyencoder.pythonanywhere.com/book/api/v1/books/search?query=${searchQuery}`
     }
-    // const url = `http://localhost:5555/books/?query=${searchQuery}`
     try {
       let res = await axios.get(url);
       setBooks(res.data.books);
+      navigate(`/home/${userRole}/${pageNum}`)
 
       setLoading(false);
     } catch (error) {
@@ -81,12 +88,15 @@ const Home = () => {
       <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify-between">
         <img src={logo} alt="Logo" className="w-14 h-20 mr-4" />
         <h1 className="text-3xl font-bold text-white">HUST Library</h1>
-        <SearchBar onSearch={handleSearch}></SearchBar>
-        <Link to="/books/create">
-          <MdOutlineAddBox className="text-sky-700 text-4xl"></MdOutlineAddBox>
-        </Link>
-
-        <div name="FILTERS Lang">
+        <SearchBar onSearch={handleSearch} ></SearchBar>
+        {userRole == "Librarian" && (
+           <Link to="/books/create">
+           <MdOutlineAddBox className="text-sky-700 text-4xl"></MdOutlineAddBox>
+         </Link>
+ 
+        )}
+        
+        {/* <div name="FILTERS Lang">
           <select
             id="language"
             className="rounded-full p-2"
@@ -102,8 +112,7 @@ const Home = () => {
             <option value="Japanese">Japanese</option>
           </select>
 
-          {/* <p>Selected Language: {selectedLanguage}</p> */}
-        </div>
+        </div> */}
 
         <div name="FILTERS Genres">
           <select

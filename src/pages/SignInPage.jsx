@@ -32,7 +32,7 @@ function SignInPage() {
             let userRole = res.data.user_role;
             localStorage.setItem("userRole", userRole);
             localStorage.setItem("userId", userId);
-            navigate(`/home/${userRole}`);
+            navigate(`/home/${userRole}/1`);
           });
       })
       .catch((error) => {

@@ -16,7 +16,7 @@ import UserHistory from './pages/UserHistory'
 const App = () => {
   return (
     <Routes>
-      <Route path="/home/:userRole" element={<Home/>} />
+      <Route path="/home/:userRole/:page" element={<Home/>} />
       <Route path='/login' element={<SignInPage/>}/>
       <Route path='/register' element={<SignUpPage/>}/>
       <Route path='/userMangement' element={<UsersTable/>}/>
@@ -28,7 +28,7 @@ const App = () => {
       <Route path="/books/details/:id" element={<ShowBooks />} />
       <Route path="/books/edit/:id" element={<EditBooks />} />
       <Route path="/books/delete/:id" element={<DeleteBooks />} />
-      <Route path="/borrow_transaction/:bookId" element={<Transaction />} />
+      <Route path="/borrow_transaction/:isbn" element={<Transaction />} />
     </Routes>
   )
 }

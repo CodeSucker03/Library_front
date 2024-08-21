@@ -9,9 +9,9 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
   }, [shelfName, status]);
 
   return (
-    <div className="flex-row border-2 px-4 py-2 m-2 border-gray-500 rounded-2xl">
-      <div className="my-4">
-        <label className="text-xl mr-4 text-gray-500">Shelf #{shelfName}</label>
+    <div className="flex flex-row border-2 px-2 py-1 m-2 border-gray-200 rounded-2xl justify-evenly">
+      <div className="my-4 flex flex-row ">
+        <label className="text-sm mr-4 text-gray-500">Shelf #{shelfName}</label>
         <input
           required
           type="text"
@@ -21,7 +21,7 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
         />
       </div>
       {/* Availability (Radio Buttons) */}
-      <div className="my-4 flex items-center">
+      <div className="my-2 mx-4 flex items-center">
         <div className="mr-4">
           <input
             required
@@ -73,7 +73,7 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
       {isEdit && (
         <button
           onClick={onDelete}
-          className="mt-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600"
+          className=" bg-red-500 text-white px-4 my-4 rounded-xl hover:bg-red-600"
         >
           Delete
         </button>

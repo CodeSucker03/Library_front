@@ -3,37 +3,53 @@ import { useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
 const Transaction = () => {
-  const { isbn, userId } = useParams();
-  const [reservationDate, setReservationDate] = useState("");
-  const [expirationDate, setExpirationDate] = useState("");
+  const { isbn } = useParams();
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Function to calculate the date 14 days from today
+  const getExpirationDate = () => {
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() + 14); // Add 14 days
+    const year = expiration.getFullYear();
+    const month = String(expiration.getMonth() + 1).padStart(2, "0");
+    const day = String(expiration.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const [reservationDate, setReservationDate] = useState(getCurrentDate());
+  const [expirationDate, setExpirationDate] = useState(getExpirationDate());
   const [error, setError] = useState("");
 
   const handleReservationChange = (e) => {
-    const selectedDate = e.target.value;
-    setReservationDate(selectedDate);
-    setExpirationDate(""); // Clear expiration date if reservation date changes
-  };
+    const newReservationDate = e.target.value;
+    setReservationDate(newReservationDate);
 
+    // Update expiration date to 14 days from the new reservation date
+    const newExpiration = new Date(newReservationDate);
+    newExpiration.setDate(newExpiration.getDate() + 14);
+    const year = newExpiration.getFullYear();
+    const month = String(newExpiration.getMonth() + 1).padStart(2, "0");
+    const day = String(newExpiration.getDate()).padStart(2, "0");
+    setExpirationDate(`${year}-${month}-${day}`);
+    
+  };
   const handleExpirationChange = (e) => {
-    const selectedDate = e.target.value;
-    if (selectedDate <= reservationDate) {
-      setError("Expiration date must be after the reservation date.");
-    } else {
-      setError("");
-      setExpirationDate(selectedDate);
-    }
+    setExpirationDate(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!error) {
-      // Process the form submission, e.g., send data to a server
-      console.log("Reservation Date:", reservationDate);
-      console.log("Expiration Date:", expirationDate);
-      console.log("ISBN:", isbn);
-      console.log("User ID:", userId);
-      // You can add more logic here as needed
-    }
+    // try {
+    //   const response = await post("/api/transactions", {
+    
+    
+    
   };
 
   return (
@@ -47,7 +63,7 @@ const Transaction = () => {
           <div className="w-2/3 bg-white p-6 rounded shadow-2xl mr-4">
             <h1 className="text-xl my-4">Receipt Information</h1>
             <h2 className="font-extralight  my-4">
-              Borrowing book with ISBN: {isbn} by User ID: {userId}
+              Borrowing book with ISBN: {isbn}
             </h2>
             <h2 className="font-extralight  my-4">
               Reservation Date: {reservationDate}
@@ -90,7 +106,7 @@ const Transaction = () => {
                   required
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   disabled={!reservationDate}
-                  min={reservationDate}
+                  min={reservationDate} // Ensure expiration date cannot be before reservation date
                 />
                 {error && (
                   <p className="text-red-500 text-xs italic mt-2">{error}</p>

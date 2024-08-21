@@ -25,7 +25,7 @@ const sideBar = ({ onClose, userName }) => {
   };
 
   const showHistory = () => {
-    navigate(`/user/history/${user.ID}`);
+    navigate(`/user/history/${userId}`);
   };
 
   const memberManagement = () => {

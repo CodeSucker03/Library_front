@@ -28,18 +28,17 @@ function SignUpPage() {
   const { enqueueSnackbar } = useSnackbar();
   const toggleCurrPassVisibility = () => setShowCurrPass(!showCurrPass);
 
-
   const handleSignup = async (event) => {
     event.preventDefault();
+    let parsedId = parseInt(Id, 10);
     let userData = {
-      id: Id,
+      id: parsedId,
       name: username,
       phone_number: phone,
       email_address: email,
       password: password,
     };
 
-    
     console.log(userData);
 
     try {
@@ -49,19 +48,13 @@ function SignUpPage() {
       );
 
       // Check for success based on status code or response content
-      if (response.status === 200 || response.data.success) {
-        navigate("/login");
-        enqueueSnackbar("Account created successfully!", {
-          variant: "success",
-        });
-      } else {
-        // Extract error message from response
-        const errorMessage =
-          response.data.message || "Signup failed. Please try again.";
-        setError(errorMessage);
-      }
+      console.log(response);
+      navigate("/login");
+      enqueueSnackbar("Account created successfully!", {
+        variant: "success",
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       // Handle network or unexpected errors
       const errorMessage =
         error.response?.data?.message || "Signup failed. Please try again.";
@@ -152,7 +145,7 @@ function SignUpPage() {
             </div>
 
             <div className="mb-4">
-            <label className="font-semibold">Enter password:</label>
+              <label className="font-semibold">Enter password:</label>
               <div className="flex flex-row my-3 ">
                 <input
                   required
