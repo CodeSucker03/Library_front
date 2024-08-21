@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes,Route } from 'react-router-dom'
+import { Routes,Route, Navigate } from 'react-router-dom'
 import CreateBooks from './pages/CreateBooks'
 import DeleteBooks from './pages/DeleteBooks'
 import EditBooks from './pages/EditBooks'
@@ -16,6 +16,7 @@ import UserHistory from './pages/UserHistory'
 const App = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" />} /> {/* Default route */}
       <Route path="/home/:userRole/:page" element={<Home/>} />
       <Route path='/login' element={<SignInPage/>}/>
       <Route path='/register' element={<SignUpPage/>}/>
