@@ -205,7 +205,7 @@ const EditBooks = () => {
         bookData
       );
       console.log(serverRes);
-      navigate("/");
+      navigate("/home/Librarian/1");
       enqueueSnackbar("Book Edited successfully!", { variant: "success" });
     } catch (error) {
       console.log(error);

@@ -165,7 +165,7 @@ const CreateBooks = () => {
           bookData
         );
         console.log(serverRes);
-        navigate("/");
+        navigate(`/home/Librarian/1`);
         enqueueSnackbar("Book created successfully!", { variant: "success" });
       } catch (error) {
         console.log(error);

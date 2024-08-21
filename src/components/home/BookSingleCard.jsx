@@ -63,9 +63,16 @@ const BookSingleCard = ({ book, userId }) => {
 
             <div className="flex items-center gap-x-2 ">
               <AiOutlineTag className="text-red-300 text-2xl" />
-              <h2 className="text-md break-words max-w-[170px]">
-                Genres: {book.genres}
-              </h2>
+              <div className="flex flex-wrap">
+                {book.genres.map((genre, index) => (
+                  <span
+                    key={index}
+                    className="text-base mx-2 bg-red-200 rounded-md p-1"
+                  >
+                    {genre}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
