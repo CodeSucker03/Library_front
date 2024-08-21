@@ -59,7 +59,7 @@ function SignInPage() {
       style={{ backgroundImage: `url(${loginImg})` }}
       className="bg-cover bg-center min-h-screen flex flex-col"
     >
-      <div className="bg-red-900 flex items-center p-1">
+      <div className="bg-blue-300 flex items-center p-1">
         <img src={logo} alt="Logo" className="w-26 h-32 mr-4" />
         <h1 className="text-3xl font-bold text-white">
           Hanoi University of Science and Technology
