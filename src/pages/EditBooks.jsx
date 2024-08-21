@@ -11,7 +11,7 @@ import ShelfLocation from "../components/ShelfLocation";
 const EditBooks = () => {
   const [ISBN, setISBN] = useState("");
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  let [author, setAuthor] = useState("");
   const [publishYear, setPublishYear] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [publisher, setPublisher] = useState("");
