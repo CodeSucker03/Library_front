@@ -19,7 +19,7 @@ const EditBooks = () => {
   const [language, setLanguage] = useState("");
   const [numCopies, setNumCopies] = useState("");
   const [description, setDescription] = useState("");
-  const [shelfLocation, setShelfLocation] = useState([]);
+  let [shelfLocation, setShelfLocation] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
 
   const [buttonState, setButton] = useState(false);
@@ -79,6 +79,10 @@ const EditBooks = () => {
       });
   }, []);
 
+  useEffect(() => {
+     setButton(shelfLocation.some(location => location.shelf === ""));
+  }, [shelfLocation]);
+
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     if (checked) {
@@ -89,27 +93,22 @@ const EditBooks = () => {
   };
 
   const addShelfLocation = () => {
-    setShelfLocation([...shelfLocation, { shelf: "", status: "Available" }]);
+    let book_id = 0
+    for (let index = 0; index < shelfLocation.length; index++) {
+      book_id = shelfLocation[index].book_id + 1
+    }
+    setShelfLocation([...shelfLocation, {book_id: parseInt(book_id), shelf: "", status: "Available" }]);
     setNumCopies(numCopies + 1);
   };
 
-  const deleteShelfLocation = (name) => {
+  const deleteShelfLocation = (id) => {
     const updatedLocations = shelfLocation.filter(
-      (item) => item.shelf !== name
+      (item) => item.book_id !== id
     );
     setShelfLocation(updatedLocations);
     setNumCopies(numCopies - 1);
   };
 
-  const generateShelfLocations = (numCopies) => {
-    // Assuming shelf numbers are sequential starting from 1
-    setShelfLocation(
-      Array.from({ length: numCopies }, (_, index) => ({
-        shelf: ``,
-        status: ``, // cycling through statuses
-      }))
-    );
-  };
   // Function to handle updating the shelfLocation array
   const handleShelfData = (updatedShelf, index) => {
     const isDuplicate = shelfLocation.some(
@@ -177,13 +176,7 @@ const EditBooks = () => {
         );
         uploadedImageUrl = response.data.secure_url;
       }
-      // const bookData = {
-      //   title,
-      //   author,
-      //   publishYear,
-
-      //   imageUrl: uploadedImageUrl,
-      // };
+      let booksWithoutId = shelfLocation.map(({ book_id, ...rest }) => rest);
 
       const bookData = {
         ISBN: ISBN,
@@ -197,7 +190,7 @@ const EditBooks = () => {
         number_of_copies_available: numCopies,
         book_cover_image: uploadedImageUrl,
         description: description,
-        shelf_locations: shelfLocation,
+        shelf_locations: booksWithoutId,
       };
       console.log(bookData);
       const serverRes = await axios.put(
@@ -208,8 +201,47 @@ const EditBooks = () => {
       navigate("/home/Librarian/1");
       enqueueSnackbar("Book Edited successfully!", { variant: "success" });
     } catch (error) {
-      console.log(error);
-      enqueueSnackbar("Edit failed", { variant: "error" });
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        switch (error.response.status) {
+          case 404:
+            enqueueSnackbar("Error 404: ISBN does not match", {
+              variant: "error",
+            });
+            break;
+          case 400:
+            enqueueSnackbar("Error 400: Bad Request - Check ISBN", {
+              variant: "error",
+            });
+            break;
+          case 403:
+            enqueueSnackbar("Error 403: Please Login again as Librarian", {
+              variant: "error",
+            });
+            break;
+          case 500:
+            enqueueSnackbar("Error 500: Server Error - Try again later", {
+              variant: "error",
+            });
+            break;
+          default:
+            enqueueSnackbar("An unexpected error occurred", {
+              variant: "error",
+            });
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        enqueueSnackbar(
+          "No response from the server. Please try again later.",
+          { variant: "error" }
+        );
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        enqueueSnackbar("Request error: " + error.message, {
+          variant: "error",
+        });
+      }
       setButton(false);
     }
   };
@@ -368,15 +400,14 @@ const EditBooks = () => {
             <div className="flex flex-col">
               {shelfLocation.map((location, index) => {
                 const key = location.book_id;
-                console.log(`Rendering ShelfLocation with key: ${key}`);
                 return (
                   <ShelfLocation
-                    key={location.shelf}
+                    key={key}
                     shelf={location}
                     onShelfDataChange={(updatedShelf) => {
                       handleShelfData(updatedShelf, index);
                     }}
-                    onDelete={() => deleteShelfLocation(location.shelf)} // Pass delete handler
+                    onDelete={() => deleteShelfLocation(location.book_id)} // Pass delete handler
                     isEdit={true}
                   />
                 );

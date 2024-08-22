@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
-import { AiOutlineEdit, AiOutlineHistory} from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineHistory } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import logo from "../assets/logo.png";
 import BackButton from "../components/BackButton";
 import Footer from "./Footer";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import ReturnBook from "./ReturnBook";
 
 const UserHistory = () => {
   const [history, setHistory] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [bookCopyId, setBookCopyId] = useState(-1);
+
   const { userId } = useParams();
   const [loading, setLoading] = useState(false);
   const [userRole, setRole] = useState(localStorage.getItem("userRole"));
-
 
   const fetchHistory = (searchQuery = "", page = 1) => {
     // default search value is empty
@@ -43,33 +46,40 @@ const UserHistory = () => {
     <div className="flex flex-col">
       <div className="bg-red-800 flex items-center p-2 fixed top-0 w-full z-50 justify-start">
         <img src={logo} alt="Logo" className="w-14 h-20 mr-4" />
-        <h1 className="text-3xl font-bold text-white">User {userId} read History</h1>
+        <h1 className="text-3xl font-bold text-white">
+          User {userId} read History
+        </h1>
       </div>
       <div className="mt-28 mx-10">
         {userRole == "Librarian" && (
           <BackButton destination={"/userMangement"}></BackButton>
         )}
-        
-        {userRole == "Member" && (
-          <BackButton></BackButton>
-        )}
+
+        {userRole == "Member" && <BackButton></BackButton>}
         <table className="w-full border-separate border-spacing-2">
           <thead>
             <tr>
               <th className="border border-black">Title</th>
+              <th className="border border-black">Copy ID</th>
               <th className="border border-black ">Issue Date</th>
               <th className="border border-black">Due Date</th>
               <th className="border border-black">Return Date</th>
               <th className="border border-black">Overdue Fine</th>
+              {userRole == "Member" && (
+                <th className="border border-black">Return book</th>
+              )}
             </tr>
           </thead>
           <tbody>
             {history.length > 0 && (
               <>
                 {history.map((book, index) => (
-                  <tr key={index} className="h-8">
+                  <tr className="h-8" key={index}>
                     <td className="border border-slate-700 text-center">
                       {book.title}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {book.book_copy_id}
                     </td>
                     <td className="border border-slate-700 text-center max-md:hidden">
                       {book.issue_date}
@@ -83,21 +93,31 @@ const UserHistory = () => {
                     <td className="border border-slate-700 text-center max-md:hidden">
                       {book.overdue_fines}
                     </td>
-                    
+                    {userRole === "Member" && (
+                      <td className="border border-slate-700 text-center">
+                        <div className="flex justify-center gap-x-4">
+                          {book.return_date !="Not returned" ? (
+                            <AiOutlineEdit className="text-2xl text-gray-400 cursor-not-allowed" />
+                          ) : (
+                            <Link to={`/return_book/${book.book_copy_id}`}>
+                              <AiOutlineEdit className="text-2xl text-yellow-600 cursor-pointer" />
+                            </Link>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </>
             )}
-
           </tbody>
         </table>
         {history.length == 0 && (
-        <div className="flex my-10  justify-center text-3xl font-light">
-          <AiOutlineHistory className="mx-5"></AiOutlineHistory>
-           No book borrowed
-        </div>
+          <div className="flex my-10  justify-center text-3xl font-light">
+            <AiOutlineHistory className="mx-5"></AiOutlineHistory>
+            No book borrowed
+          </div>
         )}
-
       </div>
       <div className="flex justify-center">
         {/* Footer content goes here */}

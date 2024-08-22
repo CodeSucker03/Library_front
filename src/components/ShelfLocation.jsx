@@ -5,7 +5,7 @@ const ShelfLocation = ({ shelf, onShelfDataChange, onDelete, isEdit }) => {
   const [shelfName, setShelfName] = useState(shelf.shelf);
 
   useEffect(() => {
-    onShelfDataChange({ shelf: shelfName, status });
+    onShelfDataChange({book_id:shelf.book_id , shelf: shelfName, status });
   }, [shelfName, status]);
 
   return (

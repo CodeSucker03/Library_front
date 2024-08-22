@@ -3,7 +3,6 @@ import { PiBookOpenTextLight } from "react-icons/pi";
 import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineClose, AiOutlineTag } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
-import formatYearMonth from "../helper";
 import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -14,7 +13,7 @@ import { Link } from "react-router-dom";
 const BookModal = ({ book, onClose, userId }) => {
   const [buttonState, setButton] = useState(false);
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "defaultRole"; // Provide a fallback if needed
+  const userRole = localStorage.getItem("userRole") || "Guest"; // Provide a fallback if needed
   const hanldeBorrowBook = (ISBN) => {
     navigate(`/borrow_transaction/${ISBN}`);
   };
@@ -47,7 +46,7 @@ const BookModal = ({ book, onClose, userId }) => {
 
           {/* Book Text Content */}
           <div className="flex-1 mt-9 space-y-8">
-            <div className="flex justify-start items-center gap-x-2">
+            <div className="flex justify-start items-center max-h-32 overflow-y-auto gap-x-2">
               <PiBookOpenTextLight className="text-red-300 text-2xl"></PiBookOpenTextLight>
               <h1 className="my-1 text-2xl">{book.title}</h1>
             </div>

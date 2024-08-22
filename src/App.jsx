@@ -12,7 +12,8 @@ import Transaction from './pages/Transaction'
 import UserInfo from './pages/UserInfo'
 import UserHistory from './pages/UserHistory'
 import ForgetPassword from './pages/ForgetPassword'
-
+import ReturnBook from './pages/ReturnBook'
+import UserStatus from './pages/UserStatus'
 
 const App = () => {
   return (
@@ -24,6 +25,8 @@ const App = () => {
       <Route path='/userMangement' element={<UsersTable/>}/>
       <Route path="/user/details/:userId" element={<UserInfo />} />
       <Route path="/user/history/:userId" element={<UserHistory />} />
+      <Route path="/user/status/:userId" element={<UserStatus />} />
+
 
       <Route path="/user/forgetpassword" element={<ForgetPassword />} />
 
@@ -32,6 +35,8 @@ const App = () => {
       <Route path="/books/edit/:id" element={<EditBooks />} />
       <Route path="/books/delete/:id" element={<DeleteBooks />} />
       <Route path="/borrow_transaction/:isbn" element={<Transaction />} />
+      <Route path="/return_book/:book_Copy_Id" element={<ReturnBook />} />
+
     </Routes>
   )
 }

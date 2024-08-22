@@ -38,7 +38,7 @@ const BookSingleCard = ({ book, userId }) => {
           <div className="flex flex-col items-start gap-y-2 mt-4">
             <div className="flex items-center gap-x-2">
               <PiBookOpenTextLight className="text-red-300 text-2xl" />
-              <h1 className="text-lg font-semibold break-words max-w-[170px]">
+              <h1 className="text-lg font-semibold break-words max-w-fit fit">
                 {book.title}
               </h1>
             </div>

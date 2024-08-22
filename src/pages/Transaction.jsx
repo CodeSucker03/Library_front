@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Transaction = () => {
   const [book, setBookId] = useState("");
@@ -10,7 +10,7 @@ const Transaction = () => {
   const [message, setMess] = useState("");
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
+  const navigate = useNavigate();
 
   const { isbn } = useParams();
   const getCurrentDate = () => {
@@ -54,17 +54,52 @@ const Transaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let userId = localStorage.getItem("userId")
-    let bookID ={
-      book_copy_id : book
-    }
+    const userRole = localStorage.getItem("userRole");
+    let userId = localStorage.getItem("userId");
+    let bookID = {
+      book_copy_id: book,
+    };
     try {
-      const response = await axios.post(`https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}/borrow`,bookID)
-      console.log(response)
+      const response = await axios.post(
+        `https://sadnguyencoder.pythonanywhere.com/user/api/v1/user/${userId}/borrow`,
+        bookID
+      );
+      console.log(response);
       enqueueSnackbar("Book borrowed successfully", { variant: "success" });
-
-    }catch(error){
-      console.log(error)
+      navigate(`/home/${userRole}/1`);
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        switch (error.response.status) {
+          
+          case 400:
+            enqueueSnackbar("Error Account has been set to Inactive", {
+              variant: "error",
+            });
+            break;
+          case 500:
+            enqueueSnackbar("Error 500: Server Error - Try again later", {
+              variant: "error",
+            });
+            break;
+          default:
+            enqueueSnackbar("An unexpected error occurred", {
+              variant: "error",
+            });
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        enqueueSnackbar(
+          "No response from the server. Please try again later.",
+          { variant: "error" }
+        );
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        enqueueSnackbar("Request error: " + error.message, {
+          variant: "error",
+        });
+      }
     }
   };
 
@@ -81,11 +116,11 @@ const Transaction = () => {
 
         if (availableLocation) {
           setBookId(availableLocation.book_id);
-          setStatus(true)
-          setMess("Book copy available !");
+          setStatus(true);
+          setMess("Found a book copy available !");
           // You can use `bookId` here as needed
         } else {
-          setError(true)
+          setError(true);
           setMess("No copy available !");
         }
 
@@ -106,81 +141,41 @@ const Transaction = () => {
         <div className="flex w-full max-w-screen-lg ">
           {/* Receipt on the left */}
           <div className="w-2/3 bg-white p-6 rounded shadow-2xl mr-4">
-            <h1 className="text-xl my-4">Receipt Information</h1>
-            <h2 className="font-extralight  my-4">
-              Borrowing book with ISBN: {isbn}
-            </h2>
-            <h2 className="font-extralight  my-4">
-              Reservation Date: {reservationDate}
-            </h2>
-            <h2 className="font-extralight  my-4">
-              Expiration Date: {expirationDate}
-            </h2>
-            <h2
-              className={`m-2 text-xl ${
-                status
-                  ? "text-green-500"
-                  : "text-red-500"
-              }`}
-            >
-              {message}
-            </h2>
-          </div>
-          {/* Form on the right */}
-          <div className="w-2/3 bg-white p-6 rounded shadow-2xl">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="reservationDate"
-                >
-                  Set Reservation Date
-                </label>
-                <input
-                  type="date"
-                  id="reservationDate"
-                  value={reservationDate}
-                  onChange={handleReservationChange}
-                  required
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="expirationDate"
-                >
-                  Set Expiration Date
-                </label>
-                <input
-                  type="date"
-                  id="expirationDate"
-                  value={expirationDate}
-                  onChange={handleExpirationChange}
-                  required
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  disabled={!reservationDate}
-                  min={reservationDate} // Ensure expiration date cannot be before reservation date
-                />
-                {error && (
-                  <p className="text-red-500 text-xs italic mt-2">{error}</p>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  className={`${
-                    error
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-500 hover:bg-blue-700 text-white"
-                  } font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-                  disabled={error}
-                >
-                  Submit
-                </button>
-              </div>
+              <h1 className="text-xl my-4">Receipt Information</h1>
+              <h2 className="font-extralight  text-xl  my-4">
+                Borrowing book with ISBN: {isbn}
+              </h2>
+              <h2 className="font-extralight text-xl  my-4">
+                Reservation Date: {reservationDate}
+              </h2>
+              <h2 className="font-extralight text-xl  my-4">
+                Expiration Date: {expirationDate} ( 14 days from today )
+              </h2>
+              <h2
+                className={`m-2 text-xl ${
+                  status ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {message}
+              </h2>
+              <button
+                type="submit"
+                className={`${
+                  error
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-red-500 hover:bg-red-700 text-white"
+                } font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                disabled={error}
+              >
+                Borrow Now !
+              </button>
             </form>
           </div>
+          {/* Form on the right
+          <div className="w-2/3 bg-white p-6 rounded shadow-2xl">
+           
+          </div> */}
         </div>
       </div>
     </div>

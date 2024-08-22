@@ -23,7 +23,7 @@ const DeleteBooks = () => {
         const userRole = localStorage.getItem("userRole")
         setLoading(false);
         enqueueSnackbar("Book deleted successfully", { variant: "success" });
-        navigate(`/home/${userRole}/`);
+        navigate(`/home/${userRole}/1`);
       })
       .catch((error) => {
         setLoading(false);

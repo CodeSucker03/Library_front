@@ -28,23 +28,23 @@ const CreateBooks = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const [genres, setGenres] = useState([])
+  const [genres, setGenres] = useState([]);
   const fetchGenres = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/genres?per_page=100&page=1'
+        "https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/genres?per_page=100&page=1"
       );
       setLoading(false);
       setGenres(response.data.genres); // Assuming the response contains a 'genres' array
     } catch (error) {
-      console.error('Error fetching genres:', error);
+      console.error("Error fetching genres:", error);
     }
   };
 
-  useEffect( () => {
-    fetchGenres()
-  },[])
+  useEffect(() => {
+    fetchGenres();
+  }, []);
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -119,7 +119,9 @@ const CreateBooks = () => {
     event.preventDefault();
     setButton(true); // set button disable
     if (selectedGenres.length === 0) {
-      enqueueSnackbar('Please select at least one genre', { variant: 'warning' });
+      enqueueSnackbar("Please select at least one genre", {
+        variant: "warning",
+      });
       setButton(false); // set button enable
       return;
     }
@@ -149,7 +151,7 @@ const CreateBooks = () => {
           ISBN: ISBN,
           authors: author.split(","),
           genres: selectedGenres,
-          title: title,
+          title: title.trim(),
           publisher: publisher,
           edition: edition,
           publication_date: publishYear,
@@ -168,8 +170,48 @@ const CreateBooks = () => {
         navigate(`/home/Librarian/1`);
         enqueueSnackbar("Book created successfully!", { variant: "success" });
       } catch (error) {
-        console.log(error);
-        enqueueSnackbar("Image upload failed", { variant: "error" });
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          switch (error.response.status) {
+            case 404:
+              enqueueSnackbar("Error 404: ISBN does not match", {
+                variant: "error",
+              });
+              break;
+            case 400:
+              enqueueSnackbar("Error 400: Bad Request - Check ISBN", {
+                variant: "error",
+              });
+              break;
+              case 403:
+                enqueueSnackbar("Error 403: Please Login again as Librarian", {
+                  variant: "error",
+                });
+                break;
+            case 500:
+              enqueueSnackbar("Error 500: Server Error - Try again later", {
+                variant: "error",
+              });
+              break;
+            default:
+              enqueueSnackbar("An unexpected error occurred", {
+                variant: "error",
+              });
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          enqueueSnackbar(
+            "No response from the server. Please try again later.",
+            { variant: "error" }
+          );
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          enqueueSnackbar("Request error: " + error.message, {
+            variant: "error",
+          });
+        }
+
         setButton(false);
       }
     } else {
@@ -329,7 +371,7 @@ const CreateBooks = () => {
                   (location.status = "Available"),
                   (
                     <ShelfLocation
-                      key={location.shelf}
+                      key={index}
                       shelf={location}
                       onShelfDataChange={(updatedShelf) =>
                         handleShelfData(updatedShelf, index)

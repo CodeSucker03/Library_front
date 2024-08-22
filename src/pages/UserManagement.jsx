@@ -8,6 +8,7 @@ import {
   AiOutlineHistory,
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
+  AiFillInteraction,
 } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import logo from "../assets/logo.png";
@@ -73,7 +74,7 @@ const UsersTable = () => {
                     Membership type
                   </th>
                   <th className="border border-black">Account status</th>
-                  <th className="border border-black">Manage</th>
+                  <th className="border border-black">History</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,7 +96,13 @@ const UsersTable = () => {
                           : "text-red-400"
                       }`}
                     >
+                      <div className="flex flex-row justify-center items-center">
                       {user.account_status}
+                      <Link to={`/user/status/${user.id}`}>
+                      <AiFillInteraction className="text-4xl mx-4"></AiFillInteraction>
+                      </Link>
+                      </div>
+                      
                     </td>
                     <td className="border border-slate-700 text-center">
                       <div className="flex justify-center gap-x-4">
