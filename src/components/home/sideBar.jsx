@@ -13,13 +13,12 @@ const sideBar = ({ onClose, userName }) => {
   const [userRole, setRole] = useState(localStorage.getItem("userRole"));
   let userId = localStorage.getItem("userId");
   const navigate = useNavigate();
-  const handleShowUserInfo = () => {
-    navigate(`/user/details/${userId}`);
-  };
 
   const LogOut = () => {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
+    localStorage.removeItem("currentPage");
+
     sessionStorage.clear();
     navigate(`/login`);
   };

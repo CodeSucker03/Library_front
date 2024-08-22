@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
 const BackButton = ({ destination }) => {
-  const userRole = localStorage.getItem("userRole") || "defaultRole";
-  const defaultDestination = `/home/${userRole}/1`;
+  const userRole = localStorage.getItem("userRole") || "";
+  const page = localStorage.getItem("currentPage") || "1"
+  const defaultDestination = `/home/${userRole}/${page}`;
   const finalDestination = destination || defaultDestination;
 
   return (

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Spinner from "../components/Spinner";
 import SideBar from "../components/home/sideBar";
 import Footer from "./Footer";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import ReactLoading from "react-loading";
+
 import {
   AiOutlineEdit,
   AiOutlineUser,
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
+  AiOutlineDoubleLeft,
 } from "react-icons/ai";
-import { BsInfoCircle,BsDatabaseAdd } from "react-icons/bs";
 import { MdAddCard } from "react-icons/md";
 import BooksCard from "../components/home/BooksCard";
 import logo from "../assets/logo.png";
@@ -23,6 +25,7 @@ const Home = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { userRole, page } = useParams();
   const navigate = useNavigate();
@@ -33,6 +36,7 @@ const Home = () => {
   const [query, setQuery] = useState(""); // State to hold the search query
 
   useEffect(() => {
+    setLoading(true);
     let userId = localStorage.getItem("userId");
     axios
       .get(
@@ -40,13 +44,19 @@ const Home = () => {
       )
       .then((res) => {
         setUserName(res.data.name);
+        setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
+        enqueueSnackbar("Error fetching user data Please login again", {
+          variant: "error",
+        });
         console.log(error);
       });
   }, []);
 
   const fetchBooks = async (searchQuery = "", page, selectgenres = []) => {
+    setLoading(true);
     let filterdata = {
       genres: selectgenres,
     };
@@ -92,6 +102,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchBooks(query, pageNum, selectedGenres); // Fetch books based on the query
+    localStorage.setItem("currentPage", pageNum);
   }, [query, pageNum, selectedGenres]); // useEffect will re-run whenever the `query` or `selectedGenre` state changes
   const handleSearch = (searchQuery) => {
     setQuery(searchQuery); // Update the query state, which triggers useEffect
@@ -158,7 +169,9 @@ const Home = () => {
               // preventing the modal from closing when clicking inside it.
               className="w-[1400px] max-w-full h-[350px] bg-red-800 rounded-2xl p-4 flex flex-col relative "
             >
-              <label className="text-xl mr-4 text-white font-bold">Genres</label>
+              <label className="text-xl mr-4 text-white font-bold">
+                Genres
+              </label>
               <div className="flex flex-wrap">
                 {genres.map((genre) => (
                   <div key={genre} className="mr-6">
@@ -186,8 +199,23 @@ const Home = () => {
           <SideBar userName={userName} onClose={() => setShowSideBar(false)} />
         )}
       </div>
-      {loading ? <Spinner /> : <BooksCard books={books}></BooksCard>}
+      {loading ? (
+        <div className="flex flex-grow items-center justify-center">
+          <ReactLoading type="cylon" color="red" />
+        </div>
+      ) : (
+        <BooksCard books={books}></BooksCard>
+      )}
       <div className="flex justify-center">
+        {pageNum > 2 && (
+          <button
+            className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+                    px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
+            OnClick={() => setPageNum(1)}
+          >
+            <AiOutlineDoubleLeft></AiOutlineDoubleLeft>
+          </button>
+        )}
         <button
           className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline  "

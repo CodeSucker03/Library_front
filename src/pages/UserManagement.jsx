@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import SearchBar from "../components/SearchBar";
+import ReactLoading from "react-loading";
 import {
   AiOutlineEdit,
   AiOutlineHistory,
@@ -32,7 +33,6 @@ const UsersTable = () => {
       .get(url)
       .then((res) => {
         setUsers(res.data.users);
-
         setLoading(false);
       })
       .catch((error) => {
@@ -56,75 +56,85 @@ const UsersTable = () => {
         </h1>
         {/* <SearchBar onSearch={handleSearch}></SearchBar> */}
       </div>
-      <div className="mt-28 mx-10">
-        <BackButton></BackButton>
-        <table className="w-full border-separate border-spacing-2">
-          <thead>
-            <tr>
-              <th className="border border-black">ID</th>
-              <th className="border border-black max-md:hidden">Name</th>
-              <th className="border border-black max-md:hidden">
-                Membership type
-              </th>
-              <th className="border border-black">Account status</th>
-              <th className="border border-black">Manage</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={user.id} className="h-8">
-                <td className="border border-slate-700 text-center">
-                  {user.id}
-                </td>
-                <td className="border border-slate-700 text-center max-md:hidden">
-                  {user.name}
-                </td>
-                <td className="border border-slate-700 text-center max-md:hidden">
-                  {user.membership_type}
-                </td>
-                <td
-                  className={`border border-slate-700 text-center ${
-                    user.account_status === "Active" ? "text-green-500" : "text-red-400"
-                  }`}
-                >
-                  {user.account_status}
-                </td>
-                <td className="border border-slate-700 text-center">
-                  <div className="flex justify-center gap-x-4">
-                    <Link to={`/user/history/${user.id}`}>
-                      <BsInfoCircle className="text-2xl text-red-800"></BsInfoCircle>
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center">
-        <button
-          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+      {loading ? (
+        <div className="flex flex-grow items-center justify-center">
+          <ReactLoading type="cylon" color="red" />
+        </div>
+      ) : (
+        <>
+          <div className="mt-28 mx-10">
+            <BackButton></BackButton>
+            <table className="w-full border-separate border-spacing-2">
+              <thead>
+                <tr>
+                  <th className="border border-black">ID</th>
+                  <th className="border border-black max-md:hidden">Name</th>
+                  <th className="border border-black max-md:hidden">
+                    Membership type
+                  </th>
+                  <th className="border border-black">Account status</th>
+                  <th className="border border-black">Manage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user, index) => (
+                  <tr key={user.id} className="h-8">
+                    <td className="border border-slate-700 text-center">
+                      {user.id}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {user.name}
+                    </td>
+                    <td className="border border-slate-700 text-center max-md:hidden">
+                      {user.membership_type}
+                    </td>
+                    <td
+                      className={`border border-slate-700 text-center ${
+                        user.account_status === "Active"
+                          ? "text-green-500"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {user.account_status}
+                    </td>
+                    <td className="border border-slate-700 text-center">
+                      <div className="flex justify-center gap-x-4">
+                        <Link to={`/user/history/${user.id}`}>
+                          <BsInfoCircle className="text-2xl text-red-800"></BsInfoCircle>
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-center">
+            <button
+              className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
-          onClick={() => setPageNum(pageNum > 1 ? pageNum - 1 : 1)} // Decrement pageNum only if it's greater than 1
-        >
-          <AiOutlineArrowLeft></AiOutlineArrowLeft>
-        </button>
-        <button
-          className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+              onClick={() => setPageNum(pageNum > 1 ? pageNum - 1 : 1)} // Decrement pageNum only if it's greater than 1
+            >
+              <AiOutlineArrowLeft></AiOutlineArrowLeft>
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
-        >
-          {pageNum}
-        </button>
-        {users.length != 0 && (
-          <button
-            className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
+            >
+              {pageNum}
+            </button>
+            {users.length != 0 && (
+              <button
+                className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                    px-4 rounded-2xl focus:outline-none focus:shadow-outline"
-            onClick={() => setPageNum(pageNum + 1)}
-          >
-            <AiOutlineArrowRight></AiOutlineArrowRight>
-          </button>
-        )}
-      </div>
+                onClick={() => setPageNum(pageNum + 1)}
+              >
+                <AiOutlineArrowRight></AiOutlineArrowRight>
+              </button>
+            )}
+          </div>
+        </>
+      )}
       <div className="flex justify-center">
         {/* Footer content goes here */}
         <Footer></Footer>

@@ -20,9 +20,10 @@ const DeleteBooks = () => {
       )
 
       .then(() => {
+        const userRole = localStorage.getItem("userRole")
         setLoading(false);
         enqueueSnackbar("Book deleted successfully", { variant: "success" });
-        navigate("/");
+        navigate(`/home/${userRole}/`);
       })
       .catch((error) => {
         setLoading(false);
@@ -34,7 +35,7 @@ const DeleteBooks = () => {
           );
         } else {
           // General error message for other errors
-          enqueueSnackbar("Error deleting book", { variant: "error" });
+          enqueueSnackbar(error.message, { variant: "error" });
         }
         console.log(error);
       });
