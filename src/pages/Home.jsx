@@ -10,12 +10,11 @@ import {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
 } from "react-icons/ai";
-import { BsInfoCircle } from "react-icons/bs";
-import { MdOutlineAddBox, MdOutlineViewSidebar } from "react-icons/md";
+import { BsInfoCircle,BsDatabaseAdd } from "react-icons/bs";
+import { MdAddCard } from "react-icons/md";
 import BooksCard from "../components/home/BooksCard";
 import logo from "../assets/logo.png";
 import SearchBar from "../components/SearchBar";
-import { enqueueSnackbar } from "notistack";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -136,7 +135,7 @@ const Home = () => {
         <SearchBar onSearch={handleSearch}></SearchBar>
         {userRole == "Librarian" && (
           <Link to="/books/create">
-            <MdOutlineAddBox className="text-sky-700 text-4xl"></MdOutlineAddBox>
+            <MdAddCard className="text-white text-4xl"></MdAddCard>
           </Link>
         )}
         <button
@@ -180,7 +179,7 @@ const Home = () => {
           </div>
         )}
         <AiOutlineUser
-          className="text-black text-4xl"
+          className="text-white text-4xl"
           onClick={() => setShowSideBar(true)}
         ></AiOutlineUser>
         {showSideBar && (

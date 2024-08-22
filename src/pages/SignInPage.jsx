@@ -92,7 +92,7 @@ function SignInPage() {
               />
                 <Link
                   className="text-blue-700 underline underline-offset-2"
-                  to=""
+                  to="/user/forgetpassword"
                 >
                   ForgotPassword ?
                 </Link>

@@ -11,6 +11,7 @@ import UsersTable from './pages/UserManagement'
 import Transaction from './pages/Transaction'
 import UserInfo from './pages/UserInfo'
 import UserHistory from './pages/UserHistory'
+import ForgetPassword from './pages/ForgetPassword'
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
       <Route path="/user/details/:userId" element={<UserInfo />} />
       <Route path="/user/history/:userId" element={<UserHistory />} />
 
+      <Route path="/user/forgetpassword" element={<ForgetPassword />} />
 
       <Route path="/books/create" element={<CreateBooks />} />
       <Route path="/books/details/:id" element={<ShowBooks />} />

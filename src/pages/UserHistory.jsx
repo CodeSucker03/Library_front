@@ -61,7 +61,6 @@ const UserHistory = () => {
               <th className="border border-black">Due Date</th>
               <th className="border border-black">Return Date</th>
               <th className="border border-black">Overdue Fine</th>
-              <th className="border border-black">Manage</th>
             </tr>
           </thead>
           <tbody>
@@ -84,11 +83,7 @@ const UserHistory = () => {
                     <td className="border border-slate-700 text-center max-md:hidden">
                       {book.overdue_fines}
                     </td>
-                    <td className="border border-slate-700 text-center">
-                      <div className="flex justify-center gap-x-4">
-                        <AiOutlineEdit className="text-2xl text-yellow-600"></AiOutlineEdit>
-                      </div>
-                    </td>
+                    
                   </tr>
                 ))}
               </>
