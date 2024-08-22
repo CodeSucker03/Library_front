@@ -32,7 +32,6 @@ const Home = () => {
 
   const [pageNum, setPageNum] = useState(parseInt(page));
 
-  // const [showType,setShowType] =useState('table')
   const [query, setQuery] = useState(""); // State to hold the search query
 
   useEffect(() => {
@@ -211,7 +210,7 @@ const Home = () => {
           <button
             className="bg-red-500 hover:bg-red-700 m-2 text-white font-bold py-3
                     px-4 rounded-2xl focus:outline-none focus:shadow-outline  "
-            OnClick={() => setPageNum(1)}
+            onClick={() => setPageNum(pageNum > 2 ? 1 : 1)}
           >
             <AiOutlineDoubleLeft></AiOutlineDoubleLeft>
           </button>
