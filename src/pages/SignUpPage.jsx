@@ -4,6 +4,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import loginImg from "../assets/loginImg.png";
+import ReactLoading from "react-loading";
+
 import {
   AiOutlineEdit,
   AiOutlineEye,
@@ -15,6 +17,7 @@ function SignUpPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showCurrPass, setShowCurrPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [passwordError, setPasswordError] = useState("");
   const [address, setAddress] = useState("");
@@ -29,6 +32,7 @@ function SignUpPage() {
   const toggleCurrPassVisibility = () => setShowCurrPass(!showCurrPass);
 
   const handleSignup = async (event) => {
+    setLoading(true)
     event.preventDefault();
     let parsedId = parseInt(Id, 10);
     let userData = {
@@ -49,6 +53,7 @@ function SignUpPage() {
 
       // Check for success based on status code or response content
       console.log(response);
+      setLoading(false)
       navigate("/login");
       enqueueSnackbar("Account created successfully!", {
         variant: "success",
@@ -59,6 +64,8 @@ function SignUpPage() {
       const errorMessage =
         error.response?.data?.message || "Signup failed. Please try again.";
       setError(errorMessage);
+      setLoading(false)
+
     }
   };
 
@@ -99,6 +106,11 @@ function SignUpPage() {
           Hanoi University of Science and Technology
         </h1>
       </div>
+      {loading ? (
+        <div className="flex flex-grow items-center justify-center">
+          <ReactLoading type="cylon" color="red" />
+        </div>
+      ) : (
       <div className="flex pt-4 justify-center">
         <div className="w-full max-w-xl">
           <form
@@ -238,6 +250,7 @@ function SignUpPage() {
           </form>
         </div>
       </div>
+      )}
     </div>
   );
 }

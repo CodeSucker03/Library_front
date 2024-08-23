@@ -28,6 +28,16 @@ const CreateBooks = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const fetchBookTitle = async () => {
+    try {
+      const response = await axios.get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn?ISBN=${ISBN}`);
+      const bookTitle = response.data.book_title;
+      setTitle(bookTitle); // Set the fetched title to the title state
+    } catch (error) {
+      console.error("Error fetching book title:", error);
+    }
+  };
+
   const [genres, setGenres] = useState([]);
   const fetchGenres = async () => {
     setLoading(true);
@@ -41,6 +51,7 @@ const CreateBooks = () => {
       console.error("Error fetching genres:", error);
     }
   };
+
 
   useEffect(() => {
     fetchGenres();
@@ -147,6 +158,8 @@ const CreateBooks = () => {
           }
         );
         const uploadedImageUrl = response.data.secure_url;
+        let booksWithoutId = shelfLocation.map(({ book_id, ...rest }) => rest);
+
         const bookData = {
           ISBN: ISBN,
           authors: author.split(","),
@@ -159,7 +172,7 @@ const CreateBooks = () => {
           number_of_copies_available: numCopies,
           book_cover_image: uploadedImageUrl,
           description: description,
-          shelf_locations: shelfLocation,
+          shelf_locations: booksWithoutId,
         };
         console.log(bookData);
         const serverRes = await axios.post(
@@ -180,7 +193,7 @@ const CreateBooks = () => {
               });
               break;
             case 400:
-              enqueueSnackbar("Error 400: Bad Request - Check ISBN", {
+              enqueueSnackbar(`Error 400: ${error.response.data.message}`, {
                 variant: "error",
               });
               break;
@@ -195,7 +208,7 @@ const CreateBooks = () => {
               });
               break;
             default:
-              enqueueSnackbar("An unexpected error occurred", {
+              enqueueSnackbar(error.message, {
                 variant: "error",
               });
           }
@@ -339,6 +352,7 @@ const CreateBooks = () => {
               type="text"
               value={ISBN}
               onChange={(e) => setISBN(e.target.value)}
+              onBlur={fetchBookTitle} // Fetch the book title when the user leaves the ISBN field
               className="border-2 border-gray-500 px-4 py-2 w-full focus:ring
              focus:ring-red-500 rounded-full"
             ></input>
