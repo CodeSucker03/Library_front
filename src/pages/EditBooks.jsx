@@ -204,32 +204,15 @@ const EditBooks = () => {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        switch (error.response.status) {
-          case 404:
-            enqueueSnackbar("Error 404: ISBN does not match", {
-              variant: "error",
-            });
-            break;
-          case 400:
-            enqueueSnackbar("Error 400: Bad Request - Check ISBN", {
-              variant: "error",
-            });
-            break;
-          case 403:
-            enqueueSnackbar("Error 403: Please Login again as Librarian", {
-              variant: "error",
-            });
-            break;
-          case 500:
-            enqueueSnackbar("Error 500: Server Error - Try again later", {
-              variant: "error",
-            });
-            break;
-          default:
-            enqueueSnackbar("An unexpected error occurred", {
-              variant: "error",
-            });
-        }
+        enqueueSnackbar(`Error: ${error.response.status}: ${error.response.data.message}`, {
+          variant: "error",
+        });
+        // switch (error.response.status) {
+        //   default:
+        //     enqueueSnackbar(`Error: ${error.response.status}: ${error.response.data.message}`, {
+        //       variant: "error",
+        //     });
+        // }
       } else if (error.request) {
         // The request was made but no response was received
         enqueueSnackbar(

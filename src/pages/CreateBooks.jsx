@@ -30,7 +30,9 @@ const CreateBooks = () => {
 
   const fetchBookTitle = async () => {
     try {
-      const response = await axios.get(`https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn?ISBN=${ISBN}`);
+      const response = await axios.get(
+        `https://sadnguyencoder.pythonanywhere.com/book/api/v1/book/isbn?ISBN=${ISBN}`
+      );
       const bookTitle = response.data.book_title;
       setTitle(bookTitle); // Set the fetched title to the title state
     } catch (error) {
@@ -51,7 +53,6 @@ const CreateBooks = () => {
       console.error("Error fetching genres:", error);
     }
   };
-
 
   useEffect(() => {
     fetchGenres();
@@ -186,32 +187,18 @@ const CreateBooks = () => {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          switch (error.response.status) {
-            case 404:
-              enqueueSnackbar("Error 404: ISBN does not match", {
-                variant: "error",
-              });
-              break;
-            case 400:
-              enqueueSnackbar(`Error 400: ${error.response.data.message}`, {
-                variant: "error",
-              });
-              break;
-              case 403:
-                enqueueSnackbar("Error 403: Please Login again as Librarian", {
-                  variant: "error",
-                });
-                break;
-            case 500:
-              enqueueSnackbar("Error 500: Server Error - Try again later", {
-                variant: "error",
-              });
-              break;
-            default:
-              enqueueSnackbar(error.message, {
-                variant: "error",
-              });
-          }
+          enqueueSnackbar(`Error: ${error.response.status}: ${error.response.data.message}`, {
+            variant: "error",
+          });
+          // switch (error.response.status) {
+          //   default:
+          //     enqueueSnackbar(
+          //       `Error: ${error.response.status}: ${error.response.data.message}`,
+          //       {
+          //         variant: "error",
+          //       }
+          //     );
+          // }
         } else if (error.request) {
           // The request was made but no response was received
           enqueueSnackbar(
